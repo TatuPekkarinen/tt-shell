@@ -11,3 +11,5 @@ type tells you whether a command is a built-in or an external program, and shows
 exit quits the shell with status code 0.
 
 Commands starting with ./ are treated as executables located in the working directory and are run using Python’s subprocess module. Anything else that isn’t a built-in or a valid executable results in an error message similar to what a normal shell would print.
+
+Part of the codecrafters challenge but I plan to make this my own thing. No AI usage at all other than for readme
