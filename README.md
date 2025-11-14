@@ -14,8 +14,8 @@ Commands starting with ./ are treated as executables located in the working dire
 
 Part of the codecrafters challenge but I plan to make this my own thing. No AI usage at all other than for README
 
-STARTER CODE PROVIDED BY CODECRAFTERS
-
+            STARTER CODE PROVIDED BY CODECRAFTERS
+            
             import sys
             
             
