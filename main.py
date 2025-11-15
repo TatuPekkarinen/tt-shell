@@ -3,6 +3,7 @@ import sys
 import shutil
 import subprocess
 import datetime
+import webbrowser
 import os
 
 GREEN = '\033[92m'
@@ -11,7 +12,7 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-commands = {"exit", "echo", "type"}
+commands = {"exit", "echo", "type", "web"}
 
 #executing file
 def exec_file(execSpl):
@@ -30,6 +31,15 @@ def exec_file(execSpl):
         not_found(execSpl)
     else:
         not_found(execSpl)
+
+#opens websites
+def open_web(cmdSpl, cmd):
+    if cmd == "web":
+        error(cmd, cmdSpl)
+    else:
+        print(f"{GREEN}Accessing website{RESET} / {cmdSpl[1]}")
+        webbrowser.open(cmdSpl[1])
+        return
 
 #error message
 def error(cmd, cmdSpl):
@@ -81,9 +91,9 @@ def cmdexec():
     sys.stdout.write(f"{GREEN}$ {RESET}")
     cmd = input()
     file_prefix = cmd.find(".")
+    web_prefix = cmd.find("http")
     cmdSpl = cmd.split(" ")
     execSpl = cmd.split(".")
-    cmdSpl = cmd.split(" ")
 
     match cmdSpl[0]:
         case "":
@@ -94,6 +104,8 @@ def cmdexec():
             exit_cmd(cmdSpl)
         case "type":
             type_cmd(cmdSpl, cmd)
+        case "web":
+            open_web(cmdSpl, cmd)
         case _:
             if  file_prefix == 0:
                 exec_file(execSpl)
