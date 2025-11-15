@@ -72,8 +72,8 @@ def type_cmd(cmdSpl, cmd):
         return  
     elif cmdSpl[1] != commands and not file_find:
         error(cmd, cmdSpl)            
-    else: print(cmdSpl[1],"is", file_find)
-
+    else: 
+        print(cmdSpl[1],"is", file_find)
     return
 
 #executing commands
