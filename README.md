@@ -1,57 +1,81 @@
-Minimal Python Shell
+### Minimal Python Shell ###
+
+### Programmed in Python version 3.14.0 ###
 
 This project is a small command-line shell written in Python. It supports a few basic builtin commands and can also run executable files from the current directory. The goal is to provide a lightweight example of how a shell parses input and decides what to do with it.
 
 Initially a codecrafters challenge I did without AI that includes a couple of differences to the initial challenge. Mostly made for me to tinker with like adding colorization making the file run commands as I actually need them to be alongside other commands that will be added.
 
-programmed in Python version 3.14.0
+### LIST OF USABLE COMMANDS WITH EXAMPLES ###
 
-LIST OF USABLE COMMANDS WITH EXAMPLES
+### exit - exits the program ###
 
-    exit - exits the program
-        $ exit
-        PS C:\Users\-\tt-shell\tt-shell> 
+```    
+$ exit
+PS C:\Users\-\tt-shell\tt-shell> 
+```    
 
-    type - tells if the file is in the directory or if the command is builtin
-        $ type cmd
-        cmd is C:\Windows\system32\cmd.EXE
+### type - tells if the file is in the directory or if the command is builtin ###
+
+```        
+$ type cmd
+cmd is C:\Windows\system32\cmd.EXE
+```
+```        
+$ type echo
+echo is a shell builtin
+```        
+
+### echo - echoes the text (example : echo Hello World!) ###
+
+```
+$ echo Hello World!
+Hello World!
+```
         
-        $ type echo
-        echo is a shell builtin
+### web - open websites ###
 
-    echo - echoes the text (example : echo Hello World!)
-        $ echo Hello World!
-        Hello World!
+```
+$ web facebook.com
+Accessing website / facebook.com
+(Opens Facebook.com)¨
+```   
 
-    web - open websites
-        $ web facebook.com
-        Accessing website / facebook.com
-        (Opens Facebook.com)
+### Prefix "." - executes a given file ###
 
-    Prefix "." - executes a given file
-        $.cmd
-        Opening the file / C:\Windows\system32\cmd.EXE
-        Microsoft Windows [Version 10.0.26200.7171]
-        (c) Microsoft Corporation. Kaikki oikeudet pidätetään.
+```        
+$.cmd
+Opening the file / C:\Windows\system32\cmd.EXE
+Microsoft Windows [Version 10.0.26200.7171]
+(c) Microsoft Corporation. Kaikki oikeudet pidätetään.
 
-        (cmd) C:\Users\-\tt-shell\tt-shell>
+(cmd) C:\Users\-\tt-shell\tt-shell>
+```       
 
-    python - outputs current python version
-        $ python
-        3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
+### python - outputs current python version ###
+
+```        
+$ python
+3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
+```        
     
-    env - prints environment variables
-        $ env
-        (environment variables)
-        $ env PATH
-        (PATH environment variable)
+### env - prints environment variables ###
+
+```
+$ env
+(environment variables)
+$ env PATH
+(PATH environment variable)
+```        
+
+### CODECRAFTERS STARTER CODE ###
+
+```            
+import sys
             
-CODECRAFTERS STARTER CODE
+def main():
+    sys.stdout.write("$ ")
             
-    import sys
-            
-    def main():
-        sys.stdout.write("$ ")
-            
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
+```

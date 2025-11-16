@@ -13,7 +13,7 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-commands = {"exit", "echo", "type", "web", "python", "environ"}
+commands = {"exit", "echo", "type", "web", "python", "env"}
 
 #executing file
 def exec_file(execSpl):
