@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import datetime
 import webbrowser
+import pprint
 import os
 
 GREEN = '\033[92m'
@@ -12,7 +13,7 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-commands = {"exit", "echo", "type", "web", "python"}
+commands = {"exit", "echo", "type", "web", "python", "environ"}
 
 #executing file
 def exec_file(execSpl):
@@ -41,17 +42,29 @@ def open_web(cmdSpl, cmd):
         webbrowser.open(cmdSpl[1])
         return
 
+#Checking environment variables   
+def environ_check(cmdSpl, cmd):
+    envar = os.environ
+    if cmd == "env": 
+        pprint.pprint(dict(envar), width=1) 
+        return
+    elif cmdSpl[1] == "PATH":
+        envar = os.environ['PATH']
+        pprint.pprint(str(envar)) 
+        return
+    else: error(cmdSpl, cmd)
+
+
 #error message
 def error(cmd, cmdSpl):
     print(f"{WARNING}", end="")
-    if cmd == "type":
-        print(f"{cmd}: syntax incorrect")
-    elif cmdSpl[1:] is not None:
-        match cmdSpl[0]:
-            case "type":
-                print(*cmdSpl[1:],": not found",sep="")
-            case _:
-                print(f"{cmd}: command not found")
+
+    match cmdSpl[0]:
+        case "type":
+            print(f"{cmd}: not found",sep="")
+        case _:
+            print(f"{cmd}: command not found")
+
     print(f"{RESET}", end="")
     return
 
@@ -72,18 +85,17 @@ def exit_cmd(cmdSpl):
 #type command
 def type_cmd(cmdSpl, cmd):
     if cmd == "type":
-        error(cmdSpl, cmd)
+        error(cmd, cmdSpl)
         return
-
-    file_find = shutil.which(cmdSpl[1])
-
+    
+    type_file = shutil.which(cmdSpl[1])
     if cmdSpl[1] in commands:
         print(cmdSpl[1], "is a shell builtin")
         return  
-    elif cmdSpl[1] != commands and not file_find:
+    elif cmdSpl[1] != commands and not type_file:
         error(cmd, cmdSpl)            
     else: 
-        print(cmdSpl[1],"is", file_find)
+        print(cmdSpl[1],"is", type_file)
     return
 
 #executing commands
@@ -107,6 +119,8 @@ def cmdexec():
             open_web(cmdSpl, cmd)
         case "python":
             print(sys.version)
+        case "env":
+            environ_check(cmdSpl, cmd)
         case _:
             if  file_prefix == 0:
                 exec_file(execSpl)
