@@ -91,7 +91,6 @@ def cmdexec():
     sys.stdout.write(f"{GREEN}$ {RESET}")
     cmd = input()
     file_prefix = cmd.find(".")
-    web_prefix = cmd.find("http")
     cmdSpl = cmd.split(" ")
     execSpl = cmd.split(".")
 
