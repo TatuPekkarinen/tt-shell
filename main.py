@@ -45,14 +45,8 @@ def open_web(cmdSpl, cmd):
 #Checking environment variables   
 def environ_check(cmdSpl, cmd):
     envar = os.environ
-    if cmd == "env": 
-        pprint.pprint(dict(envar), width=1) 
-        return
-    elif cmdSpl[1] == "PATH":
-        envar = os.environ['PATH']
-        pprint.pprint(str(envar)) 
-        return
-    else: error(cmdSpl, cmd)
+    pprint.pprint(dict(envar), width=1) 
+    return
 
 
 #error message
