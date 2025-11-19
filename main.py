@@ -49,8 +49,9 @@ def open_web(cmdSpl, cmd):
 #Checking environment variables   
 def environ_check(cmdSpl, cmd):
     envar = os.environ
-    pprint.pprint(dict(envar), width=5, depth=5) 
+    pprint.pprint(dict(envar), width=1) 
     return
+
 
 #error message
 def error(cmd, cmdSpl):

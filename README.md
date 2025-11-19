@@ -1,4 +1,4 @@
-### Minimal Python Shell ###
+### Minimal Python Shell (WORK IN PROGRESS) ###
 
 ### Programmed in Python version 3.14.0 ###
 
@@ -64,9 +64,7 @@ $ python
 ```
 $ env
 (environment variables)
-$ env PATH
-(PATH environment variable)
-```        
+```    
 
 ### CODECRAFTERS STARTER CODE ###
 
