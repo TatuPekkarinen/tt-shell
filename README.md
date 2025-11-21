@@ -26,7 +26,7 @@ $ type echo
 echo is a shell builtin
 ```        
 
-### echo - echoes the text (example : echo Hello World!) ###
+### echo - echoes the text ###
 
 ```
 $ echo Hello World!
