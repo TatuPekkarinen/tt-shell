@@ -1,11 +1,7 @@
-import time
-import sys
-import shutil
-import subprocess
-import datetime
-import webbrowser
 import pprint
-import os
+import time, datetime
+import sys, os, shutil
+import subprocess, webbrowser
 
 GREEN = '\033[92m'
 TITLE1 = '\033[94m'
@@ -83,7 +79,6 @@ def type_cmd(cmdSpl, cmd):
     if len(cmdSpl) == 1:
         error(cmd, cmdSpl)
         return
-    
     type_file = shutil.which(cmdSpl[1])
     if cmdSpl[1] in commands:
         print(cmdSpl[1], "is a shell builtin")
