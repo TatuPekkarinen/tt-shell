@@ -43,9 +43,9 @@ def open_web(cmdSpl, cmd):
         return
 
 #Checking environment variables   
-def environ_check(cmdSpl, cmd):
+def environ_check():
     envar = os.environ
-    pprint.pprint(dict(envar), width=10, indent=10) 
+    pprint.pprint(dict(envar), width=5, indent=5) 
     return
 
 #error message
@@ -110,7 +110,7 @@ def cmdexec():
         case "web":
             open_web(cmdSpl, cmd)
         case "env":
-            environ_check(cmdSpl, cmd)       
+            environ_check()       
         case "python":
             print(sys.version)
         case "exit":
