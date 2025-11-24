@@ -17,7 +17,7 @@ def exec_file(cmdSpl):
         print(f"{WARNING}{cmdSpl[1]} file not found in the PATH.{RESET}")
         return
     
-    if len(cmdSpl) == 1:
+    if len(cmdSpl) < 2:
         cmdSpl.append(" ")
         exec_file(cmdSpl) 
         return
@@ -32,9 +32,16 @@ def exec_file(cmdSpl):
         not_found(cmdSpl)
     else: not_found(cmdSpl)
 
+def curl(cmdSpl):
+    if len(cmdSpl) < 2:
+        cmdSpl.append(" ")
+        curl(cmdSpl)
+    else: 
+        return os.system(f'curl {cmdSpl[1]}')
+
 #opens websites
 def open_web(cmdSpl, cmd):
-    if len(cmdSpl) == 1:
+    if len(cmdSpl) < 2:
         cmdSpl.append('http://localhost')
         open_web(cmdSpl, cmd)
     else:
@@ -76,7 +83,7 @@ def exit_cmd(cmdSpl):
 
 #type command
 def type_cmd(cmdSpl, cmd):
-    if len(cmdSpl) == 1:
+    if len(cmdSpl) < 2:
         error(cmd, cmdSpl)
         return
     
@@ -112,6 +119,8 @@ def cmdexec():
             environ_check()       
         case "python":
             print(sys.version)
+        case "curl":
+            curl(cmdSpl)
         case "exit":
             exit_cmd(cmdSpl)   
         case _:

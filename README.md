@@ -66,6 +66,19 @@ $ env
 (environment variables)
 ```    
 
+### cURL - cURL wrapper (needs cURL installed) ###
+
+```
+$ curl google.fi
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>301 Moved</TITLE></HEAD><BODY>
+<H1>301 Moved</H1>
+The document has moved
+<A HREF="http://www.google.fi/">here</A>.
+</BODY></HTML>
+```    
+
 ### CODECRAFTERS STARTER CODE ###
 
 ```            
