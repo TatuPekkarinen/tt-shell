@@ -2,6 +2,7 @@ import pprint
 import time, datetime
 import sys, os, shutil
 import subprocess, webbrowser
+import socket
 
 GREEN = '\033[92m'
 TITLE1 = '\033[94m'
@@ -9,7 +10,22 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-commands = {"exit", "echo", "type", "web", "python", "env", "file"}
+commands = {"exit", "echo", "type", "web", "python", "env", "file", "port"}
+
+def connection_scan(cmdSpl):
+    s = socket.socket(socket.AF_INET, socket. SOCK_STREAM)
+    s.settimeout(10)
+    HOST = socket.gethostbyname(str(cmdSpl[1]))
+    status = s.connect_ex((HOST, int(cmdSpl[2])))
+
+    if status == 0:
+        print(f"{cmdSpl[1]} / {GREEN}RESPONDED{RESET}")
+    elif status > 0: 
+        print(f"{cmdSpl[1]} / {WARNING}UNREACHABLE{RESET}")
+    else: 
+        print(f"{cmdSpl[1]} / {WARNING}UNREACHABLE{RESET}")
+    s.close()
+
 
 #executing file
 def exec_file(cmdSpl):
@@ -32,7 +48,10 @@ def exec_file(cmdSpl):
         not_found(cmdSpl)
     else: not_found(cmdSpl)
 
+#curl wrapper
 def curl(cmdSpl):
+    input(f"{WARNING}curl system command / press enter at your own risk!{RESET}")
+
     if len(cmdSpl) < 2:
         cmdSpl.append(" ")
         curl(cmdSpl)
@@ -116,7 +135,9 @@ def cmdexec():
         case "web":
             open_web(cmdSpl, cmd)
         case "env":
-            environ_check()       
+            environ_check()    
+        case "con":
+            connection_scan(cmdSpl)   
         case "python":
             print(sys.version)
         case "curl":

@@ -66,6 +66,15 @@ $ env
 (environment variables)
 ```    
 
+### con - TCP connectivity check ###
+
+```
+$ con google.com 443
+google.com / RESPONDED
+$ con google.com 442
+google.com / UNREACHABLE
+```
+
 ### cURL - cURL wrapper (needs cURL installed) ###
 
 ```
