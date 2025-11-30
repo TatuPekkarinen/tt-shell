@@ -106,33 +106,24 @@ history
 ### morph - morph one string into another (I tought this was cool for a moment) ###
 
 ```
-$ morph f hello world 
-hello // -1
-hell // -1
-hel // -1
-he // -1
-h // SHIFT
-f // SHIFT
-Morph complete // f
-$ morph helloworld f
-fd // +1
-fdd // +1
-fddd // +1
-fdddd // +1
-fddddd // +1
-fdddddd // +1
-fddddddd // +1
-fdddddddd // +1
-fddddddddd // +1
-fddddddddd // SHIFT
-hddddddddd // SHIFT
-hedddddddd // SHIFT
-helddddddd // SHIFT
-helldddddd // SHIFT
-helloddddd // SHIFT
-hellowdddd // SHIFT
-hellowoddd // SHIFT
-hellowordd // SHIFT
+$ morph helloworld worldhelloprogram
+worldhelloprogram // -1
+worldhelloprogra // -1
+worldhelloprogr // -1
+worldhelloprog // -1
+worldhellopro // -1
+worldhellopr // -1
+worldhellop // -1
+worldhello // SHIFT
+horldhello // SHIFT
+herldhello // SHIFT
+helldhello // SHIFT
+helldhello // SHIFT
+hellohello // SHIFT
+hellowello // SHIFT
+hellowollo // SHIFT
+helloworlo // SHIFT
+helloworlo // SHIFT
 helloworld // SHIFT
 Morph complete // helloworld
 ```

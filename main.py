@@ -198,7 +198,7 @@ def command_execute():
     command_split = command.split(" ") 
 
     history.append(str(command))
-    if len(history) == 50:
+    if len(history) == 25:
         history.clear()
 
     match command_split[0]:
