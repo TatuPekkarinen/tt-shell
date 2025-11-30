@@ -2,7 +2,7 @@ import pprint
 import time, datetime
 import sys, os, shutil
 import subprocess, webbrowser
-import random, string
+
 import socket
 
 GREEN = '\033[92m'
