@@ -2,6 +2,7 @@ import pprint
 import time, datetime
 import sys, os, shutil
 import subprocess, webbrowser
+import random, string
 import socket
 
 GREEN = '\033[92m'
@@ -154,11 +155,13 @@ def morph(command_split):
     if morph != target:
         for n in range(100):
             if len(morph) != len(target):
-                for _ in range(absolute_value):
+                for i in range(absolute_value):
+
                     if len(target) > len(morph):
-                        morph.append(target[-1])
+                        morph.append(target[i])
                         result = "".join(morph)
                         print(f"{GREEN}{result}{RESET} // +1")
+
                     if len(target) < len(morph):
                         result = "".join(morph)
                         print(f"{WARNING}{result}{RESET} // -1")
