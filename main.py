@@ -78,10 +78,10 @@ def execute_file(command_split):
         
     execute_path = shutil.which(command_split[1])
     if os.access(str(execute_path), os.X_OK) == True:
-            input(f"{WARNING}Opening file / press enter at your own risk! {RESET}")
-            print(f"{GREEN}Opening the file /{RESET}", execute_path)
-            time.sleep(1)
-            subprocess.run(execute_path)
+        input(f"{WARNING}Opening file / press enter at your own risk! {RESET}")
+        print(f"{GREEN}Opening the file /{RESET}", execute_path)
+        time.sleep(1)
+        subprocess.run(execute_path)
 
     elif os.access(str(execute_path), os.X_OK) == False:
         not_found(command_split)
