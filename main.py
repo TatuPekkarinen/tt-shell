@@ -12,7 +12,7 @@ RESET = '\033[0m'
 
 commands = {"exit", "echo", "type", "web", 
             "python", "env", "file", "con", 
-            "history", "morph", "wrap"}
+            "history", "morph", "git", "curl"}
 
 #history stores as a global list
 history = []
@@ -75,7 +75,7 @@ def execute_file(command_split):
         command_split.append(" ")
         execute_file(command_split) 
         return
-        
+    
     execute_path = shutil.which(command_split[1])
     if os.access(str(execute_path), os.X_OK) == True:
         input(f"{WARNING}Opening file / press enter at your own risk! {RESET}")
