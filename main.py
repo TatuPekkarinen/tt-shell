@@ -89,14 +89,19 @@ def execute_file(command_split):
 
 def wrapper(command, command_split):
     #curl wrapper
+    def curl_wrap(command):
+        return os.system(command)
+    #git wrap
+    def git_wrap(command):
+        return os.system(command)
+    
     match command_split[0]:
-        case "curl"
-            def curl_wrap(command):
-                return os.system(command)
+        case "curl":
+            curl_wrap(command)
         case "git":
-            #git wrap
-            def git_wrap(command):
-                return os.system(command)
+            git_wrap(command)
+        case _:
+            error(command, command_split)
 
 #opens websites
 def open_website(command_split, command):
@@ -243,7 +248,7 @@ def command_execute():
         case "con":
             connection_scan(command_split, command)   
         case "curl":
-            curl_wrap(command)
+            wrapper(command, command_split)
         case "exit":
             exit_command(command_split)  
         case "history":
@@ -251,7 +256,7 @@ def command_execute():
         case "morph":
             morph(command_split)
         case "git":
-            git_wrap(command)
+            wrapper(command, command_split)
         case _:
             error(command, command_split)
 
