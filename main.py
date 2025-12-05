@@ -39,7 +39,7 @@ def connection_scan(command_split, command):
             else: 
                 print(f"{command_split[1]} / {WARNING}UNREACHABLE{RESET}")
             sock.close()
-        
+
         case _: 
             if command_split[1] == "range":
                 port_scan(command_split, command)
@@ -47,7 +47,7 @@ def connection_scan(command_split, command):
 
 #port scanning
 def port_scan(command_split, command):
-    input(f"{WARNING}proceed port scan?{RESET} ")
+    input(f"{WARNING}Portscan (localhost) / Press enter to continue{RESET} ")
     match len(command_split):
         case 4:
             LOCALHOST = "127.0.0.1"
@@ -135,11 +135,6 @@ def error(command, command_split):
             print(f"{command}: command not found")
             
     print(f"{RESET}", end="")
-    return
-
-#echo command
-def echo_command(command_split):
-    print(*command_split[1:])
     return
 
 #exit command
@@ -239,7 +234,7 @@ def command_execute():
         case "type":
             type_command(command_split, command)
         case "echo":
-            echo_command(command_split)
+            print(*command_split[1:])
         case "file":
             execute_file(command_split)       
         case "web":
