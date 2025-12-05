@@ -45,7 +45,7 @@ def connection_scan(command_split, command):
                 port_scan(command_split, command)
             else: error(command, command_split)
 
-#portscanner
+#port scanning
 def port_scan(command_split, command):
     input(f"{WARNING}proceed port scan?{RESET} ")
     match len(command_split):
@@ -127,7 +127,6 @@ def environ_print(command_split, command):
 #error message
 def error(command, command_split):
     print(f"{WARNING}", end="")
-    
     match command_split[0]:
         case "type":
             print(f"{command}: not found",sep="")
@@ -218,6 +217,7 @@ def modify_history(command_split):
             if command_split[1] == "clear":
                 history.clear()
         case _:
+            print(F"\n{GREEN}Command history{RESET}")
             for i in history: print(i)
 
 #executing commands

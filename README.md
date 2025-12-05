@@ -1,4 +1,4 @@
-### Minimal Python Shell (WORK IN PROGRESS) ###
+### Minimal Python Shell ###
 
 ### Programmed in Python version 3.14.0 ###
 
