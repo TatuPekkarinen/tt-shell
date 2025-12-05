@@ -78,7 +78,7 @@ def execute_file(command_split):
     
     execute_path = shutil.which(command_split[1])
     if os.access(str(execute_path), os.X_OK) == True:
-        input(f"{WARNING}Opening file / press enter at your own risk! {RESET}")
+        input(f"{WARNING}Opening file / Press enter to continue{RESET}")
         print(f"{GREEN}Opening the file /{RESET}", execute_path)
         time.sleep(1)
         subprocess.run(execute_path)
@@ -105,7 +105,7 @@ def wrapper(command, command_split):
 
 #opens websites
 def open_website(command_split, command):
-    input(f"{WARNING}entering website / press enter at your own risk! {RESET}")
+    input(f"{WARNING}Entering website / Press enter to continue{RESET}")
     
     if len(command_split) < 2:
         command_split.append('127.0.0.1')
@@ -113,6 +113,7 @@ def open_website(command_split, command):
     else:
         print(f"{GREEN}Accessing website{RESET} / {command_split[1]}")
         webbrowser.open(command_split[1])
+        command_split.clear()
         return
 
 #checking environment variables   
