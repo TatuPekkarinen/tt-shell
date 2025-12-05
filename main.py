@@ -74,6 +74,7 @@ def execute_file(command_split):
     if len(command_split) < 2:
         command_split.append(" ")
         execute_file(command_split) 
+        command_split.clear()
         return
     
     execute_path = shutil.which(command_split[1])
