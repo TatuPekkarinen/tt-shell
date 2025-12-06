@@ -19,9 +19,10 @@ commands = {"exit", "echo", "type", "web",
 history = []
 
 port_mutable = str(None)
+
 #connectivity tester and port scanner
-def connection_scan(command_split, port_mutable, command):
-    def scan(port_mutable):
+def connection_scan(command_split, command):
+    def scan():
         if status == 0:
             print(f"Port / {port_mutable} / {GREEN}{sock_data[str(status)]}{RESET}")
         elif status > 0: 
@@ -37,9 +38,8 @@ def connection_scan(command_split, port_mutable, command):
     if len(command_split) > 2:
         file = open('socket.json', 'r')
         sock_data = json.load(file)
-
         if command_split[1] == 'range':
-            print(f"{GREEN}Starting scan {command_split[2]} from {command_split[3]}{RESET}")
+            print(f"{GREEN}Starting scan from {command_split[2]} to {command_split[3]}{RESET}")
             for port_range in range(int(command_split[2]), int(command_split[3]) + 1):
                 sock = socket.socket(socket.AF_INET, socket. SOCK_STREAM)
                 sock.settimeout(0.5)
@@ -53,7 +53,7 @@ def connection_scan(command_split, port_mutable, command):
 
                 port_mutable = PORT
                 status = sock.connect_ex((LOCALHOST, PORT))
-                scan(port_mutable)  
+                scan()  
 
         else:   
             sock = socket.socket(socket.AF_INET, socket. SOCK_STREAM)
@@ -69,7 +69,14 @@ def connection_scan(command_split, port_mutable, command):
             
             port_mutable = PORT
             status = sock.connect_ex((HOST, PORT))
-            scan(port_mutable)
+            match status:
+                case 0:
+                    scan()
+                case _:
+                    if command_split[2] == isinstance(int):
+                        scan()
+                    else:
+                        error(command, command_split)
     else: error(command, command_split)
 
 #executing file
@@ -248,7 +255,7 @@ def command_execute():
         case "env":
             environ_print(command_split, command)    
         case "con":
-            connection_scan(command_split, command, port_mutable)   
+            connection_scan(command_split, command)   
         case "exit":
             exit_command(command_split)  
         case "history":
