@@ -37,8 +37,9 @@ def connection_scan(command_split, port_mutable, command):
     if len(command_split) > 2:
         file = open('socket.json', 'r')
         sock_data = json.load(file)
-        
+
         if command_split[1] == 'range':
+            print(f"{GREEN}Starting scan {command_split[2]} from {command_split[3]}{RESET}")
             for port_range in range(int(command_split[2]), int(command_split[3]) + 1):
                 sock = socket.socket(socket.AF_INET, socket. SOCK_STREAM)
                 sock.settimeout(0.5)
@@ -59,7 +60,7 @@ def connection_scan(command_split, port_mutable, command):
             sock.settimeout(5)
             HOST = socket.gethostbyname(str(command_split[1]))
             PORT = int(command_split[2])
-            print(f"connnecting to {HOST} from {PORT}")
+            print(f"{GREEN}connnecting to {HOST} from {PORT}{RESET}")
 
             if range_check() == False:
                 print(f"{WARNING}Port invalid{RESET} / (Not in range 0/65535)")
@@ -122,6 +123,49 @@ def open_website(command_split, command):
         webbrowser.open(command_split[1])
         command_split.clear()
         return
+    
+#morph one text into another
+def morph(command_split):
+    morph = list(str(command_split[2]))
+    target = list(str(command_split[1]))
+
+    m = len(morph) 
+    t = len(target)
+    value = m - t
+        
+    #shift into positive
+    if value < 0:
+        absolute_value = value * -1
+    if value > 0:
+        absolute_value = value
+
+    if morph != target:
+        for n in range(100):
+            if len(morph) != len(target):
+                for i in range(absolute_value):
+
+                    if len(target) > len(morph):
+                        morph.append(target[i])
+                        result = "".join(morph)
+                        print(f"{GREEN}{result}{RESET} // +1")
+
+                    if len(target) < len(morph):
+                        result = "".join(morph)
+                        print(f"{WARNING}{result}{RESET} // -1")
+                        morph.pop(-1)
+
+            result = "".join(morph)
+            print(f"{GREEN}{result}{RESET} // SHIFT")
+            if morph == target:
+                print(f"Morph complete // {GREEN}{result}{RESET}")
+                return
+
+            if len(morph) == len(target):
+                morph[n] = target[n]
+            
+    else: 
+        print("Morph not needed / text already morphed")
+        return
 
 #checking environment variables   
 def environ_print(command_split, command):
@@ -169,49 +213,6 @@ def type_command(command_split, command):
         
     else: print(command_split[1],"is", type_file)
     return
-
-#morph one text into another
-def morph(command_split):
-    morph = list(str(command_split[2]))
-    target = list(str(command_split[1]))
-
-    m = len(morph) 
-    t = len(target)
-    value = m - t
-        
-    #shift into positive
-    if value < 0:
-        absolute_value = value * -1
-    if value > 0:
-        absolute_value = value
-
-    if morph != target:
-        for n in range(100):
-            if len(morph) != len(target):
-                for i in range(absolute_value):
-
-                    if len(target) > len(morph):
-                        morph.append(target[i])
-                        result = "".join(morph)
-                        print(f"{GREEN}{result}{RESET} // +1")
-
-                    if len(target) < len(morph):
-                        result = "".join(morph)
-                        print(f"{WARNING}{result}{RESET} // -1")
-                        morph.pop(-1)
-
-            result = "".join(morph)
-            print(f"{GREEN}{result}{RESET} // SHIFT")
-            if morph == target:
-                print(f"Morph complete // {GREEN}{result}{RESET}")
-                return
-
-            if len(morph) == len(target):
-                morph[n] = target[n]
-            
-    else: 
-        print("Morph not needed / text already morphed")
-        return
 
 #history (work in progress)
 def modify_history(command_split):

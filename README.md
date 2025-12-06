@@ -69,17 +69,22 @@ $ env
 ### con - TCP connectivity check ###
 
 ```
-- connection test
+/ connection test
 
 $ con google.com 443
+connnecting to 216.58.209.174 from 20
 google.com / RESPONDED
-$ con google.com 442
-google.com / UNREACHABLE
 
-- port scan function (uses localhost for obvious reasons)
+```
+
+```
+$ con google.com 20
+connnecting to 216.58.209.174 from 20
+Port / 20 / RESOURCE TEMPORARILY UNAVAILABLE
+
+/ port scan functionality (uses localhost for obvious reasons)
 
 $ con range 0 5
-proceed port scan? 
 PORT / 0 / UNREACHABLE
 PORT / 1 / UNREACHABLE
 PORT / 2 / UNREACHABLE
