@@ -2,9 +2,7 @@
 
 ### Programmed in Python version 3.14.0 ###
 
-This project is a small command-line shell written in Python. It supports a few basic builtin commands and can also run executable files from the current directory. The goal is to provide a lightweight example of how a shell parses input and decides what to do with it.
-
-Initially a codecrafters challenge I did without AI that includes a couple of differences to the initial challenge. Mostly made for me to tinker with like adding colorization making the file run commands as I actually need them to be alongside other commands that will be added.
+This project is a small command-line shell written in Python. It supports a few basic built-in commands and can also run executable files from the current directory. The goal is to give a simple, lightweight example of how a shell parses user input and decides what action to take.
 
 ### LIST OF USABLE COMMANDS WITH EXAMPLES ###
 
