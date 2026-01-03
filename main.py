@@ -2,6 +2,7 @@ import pprint
 import time, datetime
 import sys, os, shutil
 import subprocess, webbrowser
+from collections import deque
 from pathlib import Path
 import socket, json
 
@@ -14,8 +15,8 @@ RESET = '\033[0m'
 #current directory
 script_dir = Path(__file__).parent
 
-#history stores as a global list
-history = []
+#global deque of command history
+history = deque(maxlen=25)
 
 #error handler
 def error_handler(command, command_split):
@@ -200,7 +201,7 @@ def type_command(command, command_split):
     return
 
 #history
-def modify_history(command, command_split):
+def modify_history(command, command_split, history):
     match len(command_split):
         case 2:
             if command_split[1] == "clear":
@@ -232,15 +233,15 @@ def command_execute():
     sys.stdout.write(f"{GREEN}$ {RESET}")
     command = input()
     command_split = command.split(" ") 
-
-    history.append(str(command))
-
-    if len(history) > 50:
-        history.clear()
+    history.append(command)
 
     if command_split[0] in commands:
         execute = commands.get(command_split[0], error_handler)
-        execute(command, command_split)
+        match command_split[0]:
+            case "history":
+                execute(command, command_split, history)
+            case _:
+                execute(command, command_split)
     else: 
         error_handler(command, command_split)
 
