@@ -102,6 +102,7 @@ def execute_file(command, command_split):
         not_found(command_split)
     else: not_found(command_split)
 
+#wrappers 
 def wrapper(command, command_split):
     curl_wrap = lambda command : os.system(command)
     git_wrap = lambda command : os.system(command)
@@ -127,7 +128,7 @@ def open_website(command, command_split):
         return
     
 #morph one text into another
-def morph(command, command_split):
+def morph_command(command, command_split):
     morph = list(str(command_split[2]))
     target = list(str(command_split[1]))
 
@@ -142,7 +143,7 @@ def morph(command, command_split):
         absolute_value = value
 
     if morph != target:
-        for n in range(100):
+        for n in range(sys.maxsize**10):
             if len(morph) != len(target):
                 for i in range(absolute_value):
 
@@ -220,9 +221,10 @@ commands = {
     "file": execute_file,
     "con": connection_scan,
     "history": modify_history,
-    "morph": morph,
+    "morph": morph_command,
     "git": wrapper,
     "curl": wrapper,
+    "cmds": lambda command, command_split: pprint.pprint(dict(commands), width = 5)
 }
 
 #executing commands
@@ -232,8 +234,9 @@ def command_execute():
     command_split = command.split(" ") 
 
     history.append(str(command))
-    if len(history) == 25:
-        history.pop()
+
+    if len(history) > 50:
+        history.clear()
 
     if command_split[0] in commands:
         execute = commands.get(command_split[0], error_handler)

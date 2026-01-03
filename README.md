@@ -4,6 +4,8 @@
 
 This project is a small command-line shell written in Python. It supports a few basic built-in commands and can also run executable files from the current directory. The goal is to give a simple, lightweight example of how a shell parses user input and decides what action to take.
 
+Should work cross platform atleast on Linux and Windows from personal experience.
+
 ### LIST OF USABLE COMMANDS WITH EXAMPLES ###
 
 ### exit - exits the program ###
@@ -48,21 +50,7 @@ Microsoft Windows [Version 10.0.26200.7171]
 (c) Microsoft Corporation. Kaikki oikeudet pidätetään.
 
 (Opens Windows commandline)
-```       
-
-### python - outputs current python version ###
-
-```        
-$ python
-3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
-```        
-    
-### env - prints environment variables ###
-
-```
-$ env
-(environment variables)
-```    
+``` 
 
 ### con - TCP connectivity check ###
 
@@ -91,18 +79,6 @@ PORT / 4 / UNREACHABLE
 PORT / 5 / UNREACHABLE
 ```  
 
-### history - access past command history ###
-
-```
-- history is stored as a list with a cap of 25 max items in history
-
-history 
-(prints out command history)
-
-history clear 
-(clears history)
-
-```
 ### morph - morph one string into another (I tought this was cool for a moment) ###
 
 ```
@@ -116,9 +92,36 @@ hello // SHIFT
 Morph complete // hello
 ```
 
+### history - access past command history ###
+
+```
+- history is stored as a list with a cap of 25 max items in history
+
+history 
+(prints out command history)
+
+history clear 
+(clears history)
+
+```
+
 ### WRAPPERS - functionalities outside of the shell ###
 
 ```
 - supports git commands
 - supports cUrl commands
+```
+
+### Commands that are for debugging and basically useless for most ###
+
+```
+$ coms
+{print of the commands dictionary}
+
+$ env
+{environment variables}
+
+$ python
+3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
+
 ```
