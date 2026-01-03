@@ -214,10 +214,11 @@ def modify_history(command, command_split, history):
 #all usable commands
 commands = {
     "exit": lambda command, command_split: sys.exit(0),
-    "type": type_command,
-    "web": open_website,
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
+    "comms": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
+    "type": type_command,
+    "web": open_website,
     "env": environ_print,
     "file": execute_file,
     "con": connection_scan,
@@ -225,7 +226,6 @@ commands = {
     "morph": morph_command,
     "git": wrapper,
     "curl": wrapper,
-    "cmds": lambda command, command_split: pprint.pprint(dict(commands), width = 5)
 }
 
 #executing commands

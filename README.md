@@ -115,7 +115,7 @@ history clear
 ### Commands that are for debugging and basically useless for most ###
 
 ```
-$ coms
+$ comms
 {print of the commands dictionary}
 
 $ env
