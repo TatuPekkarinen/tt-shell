@@ -27,11 +27,11 @@ def error_handler(command, command_split):
 def connection_scan(command, command_split):
     def scan():
         if status == 0:
-            print(f"Port / {port_mutable} / {GREEN}{sock_data[str(status)]}{RESET}")
+            print(f"Port / {current_port} / {GREEN}{sock_data[str(status)]}{RESET}")
         elif status > 0: 
-            print(f"Port / {port_mutable} / {WARNING}{sock_data[str(status)]}{RESET}")
+            print(f"Port / {current_port} / {WARNING}{sock_data[str(status)]}{RESET}")
         else: 
-            print(f"Port / {port_mutable} / {WARNING}{sock_data[str(status)]}{RESET}")
+            print(f"Port / {current_port} / {WARNING}{sock_data[str(status)]}{RESET}")
         sock.close()
 
     def port_valid(port: int) -> bool:
@@ -59,7 +59,7 @@ def connection_scan(command, command_split):
                     sock.close()
                     return
 
-                port_mutable = PORT
+                current_port = PORT
                 status = sock.connect_ex((LOCALHOST, PORT))
                 scan()  
 
@@ -76,11 +76,10 @@ def connection_scan(command, command_split):
             
             print(f"{GREEN}connnecting to {HOST} from {PORT}{RESET}")
 
-            port_mutable = PORT
+            current_port = PORT
             status = sock.connect_ex((HOST, PORT))
             if status >= 0: scan()
             else: error_handler(command, command_split)
-            
     else: error_handler(command, command_split)
 
 #executing file
@@ -98,19 +97,6 @@ def execute_file(command, command_split):
         print(f"{WARNING}{command_split[1]} file not found in the PATH{RESET}")
     else: return
 
-#wrappers 
-def wrapper(command, command_split):
-    curl_wrap = lambda command : os.system(command)
-    git_wrap = lambda command : os.system(command)
-    
-    match command_split[0]:
-        case "curl":
-            curl_wrap(command)
-        case "git":
-            git_wrap(command)
-        case _:
-            error_handler(command, command_split)
-
 #website opener
 def open_website(command, command_split):
     if len(command_split) < 2:
@@ -126,9 +112,9 @@ def morph_command(command, command_split):
     morph = list(str(command_split[2]))
     target = list(str(command_split[1]))
 
-    m_value = len(morph) 
-    t_value = len(target)
-    value = m_value - t_value
+    morph_value = len(morph) 
+    target_value = len(target)
+    value = morph_value - target_value
         
     #shift into positive
     if value < 0:
@@ -136,13 +122,13 @@ def morph_command(command, command_split):
     if value > 0:
         absolute_value = value
 
-    if morph != target:
-        for n in range(sys.maxsize**10):
+    if morph is not target:
+        for n in range(absolute_value):
             if len(morph) != len(target):
-                for i in range(absolute_value):
+                for iterator in range(absolute_value):
 
                     if len(target) > len(morph):
-                        morph.append(target[i])
+                        morph.append(target[iterator])
                         result = "".join(morph)
                         print(f"{GREEN}{result}{RESET} // +1")
 
@@ -188,16 +174,23 @@ def type_command(command, command_split):
             if file_check() == True:
                 print(f"{command_split[1]} => {type_file}")
                 return 
-        case _: error_handler(command, command_split)
+            
+            else: error_handler(command, command_split)
+        case _: print(f"{WARNING}invalid arguments {RESET}: 1 given / 2 expected")
 
 #history
 def modify_history(command, command_split):
-    if len(command_split) >= 2:
+    if len(command_split) == 2:
         match command_split[1]:
             case 'clear':
                 history.clear()
-            case _: pass
-    else: error_handler(command, command_split)
+            case _: error_handler(command, command_split)
+
+    if len(command_split) == 1:
+        if command_split[0] == 'history':
+            print(F"\n{GREEN}Command history{RESET}")
+            for element in history: print(f"{GREEN}=>{RESET} {element}")
+            return
     return
 
 #all usable commands
@@ -206,15 +199,15 @@ commands = {
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
     "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
+    "git": lambda command, command_split: os.system(command),
+    "curl": lambda command, command_split: os.system(command),
     "type": type_command,
     "web": open_website,
     "env": environ_print,
     "file": execute_file,
     "con": connection_scan,
     "history": modify_history,
-    "morph": morph_command,
-    "git": wrapper,
-    "curl": wrapper,
+    "morph": morph_command
 }
 
 #executing commands
