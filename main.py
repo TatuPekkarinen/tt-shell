@@ -99,13 +99,30 @@ def execute_file(command, command_split):
 
 #website opener
 def open_website(command, command_split):
-    if len(command_split) < 2:
-        command_split.append('127.0.0.1')
-        open_website(command_split, command)
-    else:
-        print(f"{GREEN}Accessing website{RESET} / {command_split[1]}")
-        webbrowser.open(command_split[1])
-        return
+    def port_valid(port: int) -> bool:
+        return 0 <= port <= 65535
+    match len(command_split):
+        case 2:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5)
+
+            try:
+                HOST = socket.gethostbyname(str(command_split[1]))
+            except socket.gaierror:
+                print(f"{WARNING}socket.gaierror{RESET} / Unable to open website")
+                return
+            
+            PORT = 443
+            print(f"CONNECTION TEST => {GREEN}Connection to {HOST} from {PORT}{RESET}")
+            status = sock.connect_ex((HOST, 443))
+
+            if status == 0:
+                print(f"CONNECTION SUCCESFUL => {GREEN}Accessing website{RESET} / {command_split[1]}")
+                webbrowser.open(command_split[1])
+
+            else: print(f"{WARNING}Connection failed{RESET} / Unable to open website")
+            return
+        case _: error_handler(command, command_split)
     
 #morph strings
 def morph_command(command, command_split):
