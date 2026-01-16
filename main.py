@@ -26,8 +26,9 @@ def scan(current_port, sock_data, status, sock):
     else: 
         print(f"Port / {current_port} / {WARNING}{sock_data[str(status)]}{RESET}")
     sock.close()
+    return
 
-#error handler (work needed)
+#error handler
 def error_handler(command, command_split):
     print(f"{WARNING}Command not found{RESET} => {command}")
     return
@@ -44,7 +45,7 @@ def connection_portal(command, command_split):
 
         if command_split[1] == 'range':
             if len(command_split) <= 3:
-                print(f"{WARNING}invalid arguments {RESET}: 3 given / 4 expected")
+                print(f"{WARNING}invalid arguments{RESET} => 3 given / 4 expected")
                 return
 
             print(f"{GREEN}Starting scan from {command_split[2]} to {command_split[3]}{RESET}")
@@ -81,21 +82,25 @@ def connection_portal(command, command_split):
             if status >= 0: scan(current_port, sock_data, status, sock)
             else: error_handler(command, command_split)
     else: error_handler(command, command_split)
+    return
 
 #executing file
 def execute_file(command, command_split):
     if len(command_split) < 2:
         error_handler(command, command_split)
+        return
     
     execute_path = shutil.which(command_split[1])
-    if os.access(str(execute_path), os.X_OK) == True:
+    if execute_path is None:
+        print(f"{WARNING}{command_split[1]} file not found in => PATH{RESET}")
+        return
+    
+    if os.access(str(execute_path), os.X_OK):
         print(f"{GREEN}Opening the file /{RESET}", execute_path)
         time.sleep(1)
         subprocess.run(execute_path)
-
-    elif os.access(str(execute_path), os.X_OK) == False:
-        print(f"{WARNING}{command_split[1]} file not found in the PATH{RESET}")
-    else: return
+    else: print(f"{WARNING}{command_split[1]} file not found in => PATH{RESET}")
+    return
 
 #website opener
 def open_website(command, command_split):
@@ -119,6 +124,7 @@ def open_website(command, command_split):
             else: print(f"{WARNING}Connection failed{RESET} / Unable to open website")
             return
         case _: error_handler(command, command_split)
+    return
     
 #environment variables   
 def environ_print(command, command_split):
@@ -147,16 +153,18 @@ def type_command(command, command_split):
             
             else: error_handler(command, command_split)
         case _: print(f"{WARNING}invalid arguments {RESET}: 1 given / 2 expected")
+    return
 
 #morph strings
 def morph_command(command, command_split):
     morph = list(str(command_split[2]))
     target = list(str(command_split[1]))
+        
+    #shift into positive
     morph_value = len(morph) 
     target_value = len(target)
     value = morph_value - target_value
-        
-    #shift into positive
+
     if value < 0:
         absolute_value = value * -1
     if value > 0:
@@ -169,11 +177,11 @@ def morph_command(command, command_split):
                     if len(target) > len(morph):
                         morph.append(target[iterator])
                         result = "".join(morph)
-                        print(f"{GREEN}{result}{RESET} // +1")
+                        print(f"{GREEN}{result}{RESET} <= +1")
 
                     if len(target) < len(morph):
                         result = "".join(morph)
-                        print(f"{WARNING}{result}{RESET} // -1")
+                        print(f"{WARNING}{result}{RESET} <= -1")
                         morph.pop(-1)
 
             result = "".join(morph)
