@@ -215,14 +215,28 @@ def modify_history(command, command_split):
             return
     return
 
+def wrappers(command, command_split):
+    run_failure = lambda: print(f"{WARNING}Failed to run command{RESET} => {command}")
+    match command_split[0]:
+        case 'curl':
+            try: subprocess.run(command, shell=True)
+            except: run_failure()
+            return
+        case 'git': 
+            try: subprocess.run(command, shell=True)
+            except: run_failure()
+            return
+        case _: error_handler(command, command_split)
+    return
+
 #all usable commands
 commands = {
     "exit": lambda command, command_split: sys.exit(0),
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
     "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
-    "git": lambda command, command_split: os.system(command),
-    "curl": lambda command, command_split: os.system(command),
+    "git": wrappers,
+    "curl": wrappers,
     "type": type_command,
     "web": open_website,
     "env": environ_print,

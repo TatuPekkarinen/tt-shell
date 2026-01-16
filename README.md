@@ -2,124 +2,173 @@
 
 ### Programmed in Python version 3.14.0 ###
 
-Monolithically written Python shell with various functionalities. Using OS-level libraries and subprocesses along with other interesting libraries. Usable for actual purposes or open source tinkering. 
+Monolithically written Python shell with various functionalities. Using OS-level libraries and subprocesses along with other interesting libraries. Parses with Shlex and it is possible to use Git and Curl with this shell. Usable for actual purposes, open source tinkering or whatever. 
 
-### LIST OF USABLE COMMANDS WITH EXAMPLES ###
+# tt-shell-python Documentation
 
-### exit - exits the program ###
+All commands are executed from the shell prompt
 
-```    
-$ exit
-PS C:\Users\-\tt-shell\tt-shell> 
-```    
+---
 
-### type - tells if the file is in the directory or if the command is builtin ###
-
-```        
-$ type cmd
-{Location of cmd}
+## Running the Shell
 ```
-```        
-$ type echo
-{info on the command echo}
-```        
-
-### echo - echoes the text ###
+bash
+$ uv run main.py
+tt-shell / <timestamp>
+[/path/to/tt-shell-python/main.py] => 
 
 ```
-$ echo Hello World!
-Hello World!
+
+
+
+# Connection Commands
+Single Port Connection
 ```
-        
-### web - open websites ###
-
+[/path/to/tt-shell-python/main.py] => con <host> <port>
+connecting to <host_ip> from <port>
+Port / <port> / RESPONDED
 ```
-$ web facebook.com
-Accessing website / facebook.com
-(Opens Facebook.com)¨
-```   
-
-### file - executes a given file ###
-
-```        
-$ file cmd
-Opening the file / C:\Windows\system32\cmd.EXE
-Microsoft Windows [Version 10.0.26200.7171]
-(c) Microsoft Corporation. Kaikki oikeudet pidätetään.
-
-(Opens Windows commandline)
-``` 
-
-### con - TCP connectivity check ###
+Port Range Scan
+```
+[/path/to/tt-shell-python/main.py] => con range <start_port> <end_port>
+Starting scan from <start_port> to <end_port>
+Port / 1 / CONNECTION REFUSED
+Port / 2 / CONNECTION REFUSED
 
 ```
-/ connection test
 
-$ con google.com 443
-connnecting to 216.58.209.174 from 20
-google.com / RESPONDED
+
+
+# Type Command
+Checks if a command is builtin or a system executable
+```
+[/path/to/tt-shell-python/main.py] => type <command>
+<command> => <path or function info>
 
 ```
 
 ```
-$ con google.com 20
-connnecting to 216.58.209.174 from 20
-Port / 20 / RESOURCE TEMPORARILY UNAVAILABLE
+[/path/to/tt-shell-python/main.py] => type echo
+echo // <function reference>
 
-/ port scan functionality (uses localhost for obvious reasons)
-
-$ con range 0 5
-PORT / 0 / UNREACHABLE
-PORT / 1 / UNREACHABLE
-PORT / 2 / UNREACHABLE
-PORT / 3 / UNREACHABLE
-PORT / 4 / UNREACHABLE
-PORT / 5 / UNREACHABLE
-```  
-
-### morph - morph one string into another (I tought this was cool for a moment) ###
-
-```
-$ morph hello world
-world // SHIFT
-horld // SHIFT
-herld // SHIFT
-helld // SHIFT
-helld // SHIFT
-hello // SHIFT
-Morph complete // hello
+[/path/to/tt-shell-python/main.py] => type konsole
+konsole => /usr/bin/konsole
 ```
 
-### history - access past command history ###
 
+
+# Echo Command
+Prints text to the shell
 ```
-- history is stored as a double ended queue with a cap of 25 max items in history
-
-history 
-(prints out command history)
-
-history clear 
-(clears history)
-
+[/path/to/tt-shell-python/main.py] => echo "Hello world!"
+Hello world!
 ```
 
-### WRAPPERS - functionalities outside of the shell ###
+
+
+# Web Command
+Opens a website and checks connectivity
+```
+[/path/to/tt-shell-python/main.py] => web <website>
+CONNECTION TEST => Connection to <host_ip> from <port>
+CONNECTION SUCCESSFUL => Accessing website / <website>
+```
+
+
+
+# File Execution
+Runs a system file
+```
+[/path/to/tt-shell-python/main.py] => file <filename>
+Opening file => <path_to_file>
+```
+
+
+
+# Morph Command
+Transforms one string into another step by step
+```
+[/path/to/tt-shell-python/main.py] => morph <source> <target>
+<intermediate transformations>
+Morph complete // <target>
+```
+
+
+
+# Command History
+View and clear past commands
+```
+[/path/to/tt-shell-python/main.py] => history
+Command history
+=> <past commands>
+```
 
 ```
-- supports git commands
-- supports cUrl commands
+[/path/to/tt-shell-python/main.py] => history clear
 ```
 
-### Commands that are for debugging and basically useless for most ###
+
+
+# Git Commands
+Supports Git commands via wrapper
 
 ```
-$ com
-{print of the commands dictionary}
+[/path/to/tt-shell-python/main.py] => git
+usage: git <command> [<args>]
+Common Git commands:
+  clone, init, add, mv, restore, rm, bisect, diff, grep, log, show, status,
+  backfill, branch, commit, merge, rebase, reset, switch, tag, fetch, pull, push
+```
 
-$ env
-{environment variables}
 
-$ python
-3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]
 
+# cURL Wrapper
+Supports curl commands
+```
+[/path/to/tt-shell-python/main.py] => curl <url>
+# Example:
+[/path/to/tt-shell-python/main.py] => curl google.com
+<HTML>...
+<TITLE>301 Moved</TITLE>
+...
+```
+
+
+
+# Debugging Commands
+com / Lists all available commands
+```
+[/path/to/tt-shell-python/main.py] => com
+{
+ 'com': <function>,
+ 'con': <function>,
+ 'curl': <function>,
+ 'echo': <function>,
+ 'env': <function>,
+ 'exit': <function>,
+ 'file': <function>,
+ 'git': <function>,
+ 'history': <function>,
+ 'morph': <function>,
+ 'python': <function>,
+ 'type': <function>,
+ 'web': <function>
+}
+```
+env / Displays environment variables
+```
+[/path/to/tt-shell-python/main.py] => env
+{
+ 'HOME': '<user_home>',
+ 'PATH': '<env_paths>',
+ 'SHELL': '/usr/bin/bash',
+ 'USER': '<username>',
+ 'VIRTUAL_ENV': '<venv_path>',
+ ...
+}
+```
+python / Displays current python version
+```
+[/path/to/tt-shell-python/main.py] => python
+[/path/to/tt-shell-python/main.py] => {python version}
 ```
