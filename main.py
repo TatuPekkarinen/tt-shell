@@ -195,7 +195,6 @@ def morph_command(command, command_split):
 
             if len(morph) == len(target):
                 morph[number] = target[number]
-
     else: 
         print(f"{GREEN}{morph} <=> {target}{RESET}")
         return
@@ -219,15 +218,16 @@ def wrappers(command, command_split):
     run_failure = lambda: print(f"{WARNING}Failed to run command{RESET} => {command}")
     match command_split[0]:
         case 'curl':
-            try: subprocess.run(command, shell=True)
+            try: subprocess.run(command_split)
             except: run_failure()
             return
         case 'git': 
-            try: subprocess.run(command, shell=True)
+            try: subprocess.run(command_split)
             except: run_failure()
             return
-        case _: error_handler(command, command_split)
-    return
+        case _: 
+            error_handler(command, command_split)
+            return
 
 #all usable commands
 commands = {
@@ -248,7 +248,7 @@ commands = {
 
 #executing commands
 def command_execute():
-    sys.stdout.write(f"[{script_directory}/{sys.argv[0]}]{GREEN} => {RESET}")
+    sys.stdout.write(f"[{script_directory}]{GREEN} => {RESET}")
 
     try:
         command = input()
@@ -276,7 +276,7 @@ def command_execute():
 
 def main():
     date = datetime.datetime.now()
-    print(f"{TITLE1}tt-shell{RESET} / {TITLE2}{date}{RESET}")
+    print(f"{TITLE1}tt-shell [{sys.argv[0]}]{RESET} / {TITLE2}{date}{RESET}")
     while True:
         command_execute()
 
