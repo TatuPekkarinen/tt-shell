@@ -53,8 +53,9 @@ def connection_portal(command, command_split):
             portrange_minimum = int(command_split[2])
             portrange_maximum = int(command_split[3]) + 1
             
-            try:
-                for port_iterator in range(portrange_minimum, portrange_maximum):
+            for port_iterator in range(portrange_minimum, portrange_maximum):
+
+                try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.settimeout(0.5)
 
@@ -77,8 +78,8 @@ def connection_portal(command, command_split):
                     status = sock.connect_ex((LOCALHOST, PORT))
                     scan(current_port, sock_data, status, sock)  
 
-            except KeyboardInterrupt: 
-                print("{WARNING}KeyboardInterrupt{RESET}")
+                except KeyboardInterrupt: 
+                    print("{WARNING}KeyboardInterrupt{RESET}")
 
         else:   
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -138,7 +139,6 @@ def open_website(command, command_split):
             sock.settimeout(5)
 
             HTTPS_PORT = 443
-
             try: HOST = socket.gethostbyname(str(command_split[1]))
             except socket.gaierror:
                 print(f"{WARNING}socket.gaierror{RESET} / Unable To Open Website")
@@ -289,6 +289,7 @@ def command_execute(current_directory):
     except KeyboardInterrupt: 
         print(f"\n{WARNING}KeyboardInterrupt{RESET}")
         return
+    
 def main():
     date = datetime.datetime.now()
     print(f"{TITLE1}tt-shell [{sys.argv[0]}]{RESET} / {TITLE2}{date}{RESET}")
