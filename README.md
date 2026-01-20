@@ -46,7 +46,7 @@ Port / 2 / CONNECTION REFUSED
 # Bluetooth monitor
 Bluetooth monitor
 ```
-[/path/to/tt-shell-python/main.py] => ble monitor
+[/path/to/tt-shell-python/main.py] => ble
 {Bluetooth devices}
 => KeyboardInterrupt
 {ends monitoring}

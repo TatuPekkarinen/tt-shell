@@ -21,31 +21,28 @@ script_directory = Path(__file__).parent
 #global deque of command history
 history = deque(maxlen=35)
 
-#general error handler
+#general error handler (relic that will be removed)
 def error_handler(command, command_split):
     print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
     return
 
 #bleak bluetooth monitor
 async def ble_monitor(command, command_split):
-    if len(command_split) > 1:
-        match command_split[1]:
-            case 'monitor':
-                print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end monitor")
-                try:
-                    devices = await BleakScanner.discover()
-                    for device in devices:
-                        print(f"{device}")
-                        await asyncio.sleep(0.1)
-                except KeyboardInterrupt: 
-                    print(f"{WARNING}KeyboardInterrupt{RESET}")
-                    return
-            case _:         
-                error_handler(command, command_split)
-                return
-    else:
-        error_handler(command, command_split)
-        return
+    if len(command_split) == 1:
+        print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end monitor")
+        print(f"{GREEN}Bluetooth Monitor{RESET} >> Starting")
+        try:
+            devices = await BleakScanner.discover()
+            for device in devices:
+                print(f"{device}")
+                await asyncio.sleep(0.1)
+
+        except asyncio.CancelledError: raise   
+        except KeyboardInterrupt: 
+            print(f"{WARNING}KeyboardInterrupt{RESET}")
+            return
+    
+    else: error_handler(command, command_split)
 
 def scan(PORT, sock_data, sock, status):
     if status == 0:
