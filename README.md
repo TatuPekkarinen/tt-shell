@@ -2,7 +2,7 @@
 
 ### Programmed in Python version 3.14.0 ###
 
-Monolithically structured Python shell with various functionalities. Using OS-level libraries and subprocesses along with other interesting libraries. Parses with Shlex and tt-shell provide the possibility to use Git and Curl inside this shell trough subprocesses. Usable for actual purposes, open source tinkering or whatever. My largest scale software project so far, tt-shell has taught me a lot about maintainability, the weight of decisions and technical debt.  
+Monolithically structured Python shell with various functionalities. Using OS-level libraries and subprocesses along with other interesting libraries. Parses with Shlex and the shell provides the possibility to use Git and Curl inside this shell trough subprocesses. Usable for actual purposes, open source tinkering or whatever. My largest scale software project so far, tt-shell has taught me a lot about maintainability, the weight of decisions and technical debt.  
 
 ### Security caution
 Not intended for any security critical usages. Not yet hardened for production and only for educational purposes.
@@ -34,7 +34,7 @@ Port / 2 / CONNECTION REFUSED
 
 ```
 
-### Bluetooth discover
+### Bluetooth device discover
 *discovers nearby Bluetooth adresses*
 ```
 [/path/to/tt-shell-python/main.py] >>> ble
