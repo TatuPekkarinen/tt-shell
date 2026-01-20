@@ -34,7 +34,6 @@ def error_handler(command, command_split):
 
 #connectivity tester and port scanner
 def connection_portal(command, command_split):
-
     maximum_port = 65535
     def port_valid(port: int) -> bool:
         return 0 <= port <= maximum_port
@@ -52,7 +51,6 @@ def connection_portal(command, command_split):
             print(f"{GREEN}Starting Scan From {command_split[2]} To {command_split[3]}{RESET}")
             scanrange_minimum = int(command_split[2])
             scanrange_maximum = int(command_split[3]) + 1
-            
             for port_iterator in range(scanrange_minimum, scanrange_maximum):
 
                 try:
@@ -158,9 +156,9 @@ def open_website(command, command_split):
 #environment variables   
 def environ_print(command, command_split):
     if len(command_split) == 1:
-            envar = os.environ
-            pprint.pprint(dict(envar), width=5, indent=5) 
-            return
+        envar = os.environ
+        pprint.pprint(dict(envar), width=5, indent=5) 
+        return
     else: 
         error_handler(command, command_split)
         return
@@ -218,7 +216,7 @@ def external_tools(command, command_split):
     match command_split[0]:
         case 'curl' | 'git':
             try: 
-                subprocess.run(command_split, shell=False, check=True)
+                subprocess.run(command_split, check=True)
                 return
             
             except subprocess.CalledProcessError: 
