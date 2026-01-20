@@ -1,6 +1,6 @@
 ### Minimal Python Shell ###
 
-### Programmed in Python version 3.14.0 ###
+### Programmed in Python version 3.14.2 ###
 
 Monolithically structured Python shell with various functionalities. Using OS-level libraries and subprocesses along with other interesting libraries. Parses with Shlex and the shell provides the possibility to use Git and Curl inside this shell trough subprocesses. Usable for actual purposes, open source tinkering or whatever. My largest scale software project so far, tt-shell has taught me a lot about maintainability, the weight of decisions and technical debt.  
 
@@ -32,6 +32,7 @@ For the working directory of the shell
 python main.py
 
 ```
+
 
 
 ### Initial interface
