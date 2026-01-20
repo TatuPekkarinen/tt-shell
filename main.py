@@ -75,51 +75,48 @@ def connection_portal(command, command_split):
             for port_iterator in range(scanrange_minimum, scanrange_maximum):
 
                 try:
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(0.5)
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                        sock.settimeout(0.5)
 
-                    #shouldn't be touched at all
-                    LOCALHOST = '127.0.0.1' 
+                        #shouldn't be touched at all
+                        LOCALHOST = '127.0.0.1' 
+                        PORT = int(port_iterator)
 
-                    PORT = int(port_iterator)
-                    portscan_state = False
+                        if PORT == int(maximum_port):
+                            print(f"{GREEN}Scan Succesful{RESET} >>> Returning")
+                            sock.close()
+                            return
 
-                    if PORT == int(maximum_port):
-                        print(f"{GREEN}Scan Succesful{RESET} >>> Returning")
-                        portscan_state = True
-
-                    if not port_valid(PORT):
-                        print(f"{WARNING}Port ({port_iterator}) Invalid{RESET} (Not In Range)")
-                        sock.close()
-                        return
-                    
-                    elif portscan_state == True: return
-                    
-                    status = sock.connect_ex((LOCALHOST, PORT))
-                    scan(PORT, sock_data, sock, status)  
+                        if not port_valid(PORT):
+                            print(f"{WARNING}Port ({port_iterator}) Invalid{RESET} (Not In Range)")
+                            sock.close()
+                            return
+                        
+                        status = sock.connect_ex((LOCALHOST, PORT))
+                        scan(PORT, sock_data, sock, status)  
 
                 except KeyboardInterrupt: 
                     print(f"{WARNING}KeyboardInterrupt{RESET}")
 
         else:   
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(5)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(5)
 
-            try:
-                HOST = socket.gethostbyname(str(command_split[1]))
-            except socket.gaierror: 
-                print(f"{WARNING}socket.gaierror{RESET} / Unable To Open Website")
-                return
-            
-            PORT = int(command_split[2])
-            if not port_valid(PORT):
-                print(f"{WARNING}Port Invalid{RESET} / (Not In Range 0-65535)")
-                sock.close()
-                return
-            
-            print(f"{GREEN}Connnecting To {HOST} From {PORT}{RESET}")
-            status = sock.connect_ex((HOST, PORT))
-            scan(PORT, sock_data, sock, status) 
+                try:
+                    HOST = socket.gethostbyname(str(command_split[1]))
+                except socket.gaierror: 
+                    print(f"{WARNING}socket.gaierror{RESET} / Unable To Open Website")
+                    return
+                
+                PORT = int(command_split[2])
+                if not port_valid(PORT):
+                    print(f"{WARNING}Port Invalid{RESET} / (Not In Range 0-65535)")
+                    sock.close()
+                    return
+                
+                print(f"{GREEN}Connnecting To {HOST} From {PORT}{RESET}")
+                status = sock.connect_ex((HOST, PORT))
+                scan(PORT, sock_data, sock, status) 
             return
 
     else: 
@@ -166,12 +163,12 @@ def open_website(command, command_split):
             if status == 0:
                 print(f"Connection Succesful >>> {GREEN}Accessing Website{RESET} >>> {command_split[1]}")
                 webbrowser.open(command_split[1])
-                status.close()
+                sock.close()
                 return
 
             else: 
                 print(f"{WARNING}Connection Failed{RESET} / Unable To Open Website")
-                status.close()
+                sock.close()
                 return
         case _: 
             error_handler(command, command_split)
