@@ -58,16 +58,15 @@ def connection_portal(command, command_split):
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.settimeout(0.5)
-
-                    portscan_state = False
                     LOCALHOST = '127.0.0.1'
                     PORT = int(port_iterator)
+                    portscan_state = False
 
                     if PORT == int(maximum_port):
                         print(f"{GREEN}Scan Succesful{RESET} >>> Returning")
                         portscan_state = True
 
-                    if port_valid(PORT) == False:
+                    if not port_valid(PORT):
                         print(f"{WARNING}Port ({port_iterator}) Invalid{RESET} (Not In Range)")
                         sock.close()
                         return
@@ -121,7 +120,7 @@ def execute_file(command, command_split):
     if os.access(str(execute_path), os.X_OK):
         print(f"{GREEN}Opening File{RESET} >>> ({execute_path})")
         time.sleep(1)
-        subprocess.run(execute_path, shell=False)
+        subprocess.run(execute_path, check=True, shell=False)
         return
     
     else: 
