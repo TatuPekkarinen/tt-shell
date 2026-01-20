@@ -2,6 +2,8 @@ import pprint
 import shlex
 import time, datetime
 import sys, os, shutil
+import asyncio
+from bleak import BleakScanner
 import subprocess, webbrowser
 from collections import deque
 from pathlib import Path
@@ -19,17 +21,36 @@ script_directory = Path(__file__).parent
 #global deque of command history
 history = deque(maxlen=35)
 
+#general error handler
+def error_handler(command, command_split):
+    print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
+    return
+
+#bleak bluetooth monitor
+async def ble_monitor(command, command_split):
+    if len(command_split) > 1:
+        match command_split[1]:
+            case 'monitor':
+                print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end monitor")
+                try:
+                    devices = await BleakScanner.discover()
+                    for device in devices:
+                        print(f"{device}")
+                        await asyncio.sleep(0.1)
+                except KeyboardInterrupt: return
+            case _:         
+                error_handler(command, command_split)
+                return
+    else:
+        error_handler(command, command_split)
+        return
+
 def scan(PORT, sock_data, sock, status):
     if status == 0:
         print(f"Port >>> {PORT} >>> {GREEN}{sock_data[str(status)]}{RESET}")
     if status > 0: 
         print(f"Port >>> {PORT} >>> {WARNING}{sock_data[str(status)]}{RESET}")
     sock.close()
-    return
-
-#general error handler
-def error_handler(command, command_split):
-    print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
     return
 
 #connectivity tester and port scanner
@@ -110,7 +131,6 @@ def execute_file(command, command_split):
         return
     
     execute_path = shutil.which(command_split[1])
-
     if execute_path is None:
         print(f"{WARNING}File Not Found{RESET} >>> ({command_split[1]})")
         return
@@ -249,6 +269,7 @@ commands = {
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
     "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
+    "ble": lambda command, command_split: asyncio.run(ble_monitor(command, command_split)),
     "git": external_tools,
     "curl": external_tools,
     "type": type_command,
