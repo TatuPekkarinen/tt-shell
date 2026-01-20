@@ -8,6 +8,32 @@ Monolithically structured Python shell with various functionalities. Using OS-le
 Not intended for any security critical usages. Not yet hardened for production and only for educational purposes.
 
 ## tt-shell
+
+### Setup guide
+
+*Clone this repo*
+
+```
+git clone https://github.com/TatuPekkarinen/tt-shell.git
+
+```
+
+*Pip install requirements.txt*
+
+```
+pip install -r requirements.txt
+
+```
+
+*Then just run the script main.py*
+```
+For the working directory of the shell
+[/-/-/shell/tt-shell-python] 
+python main.py
+
+```
+
+
 ### Initial interface
 ```
 tt-shell / <timestamp>
