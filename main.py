@@ -37,7 +37,9 @@ async def ble_monitor(command, command_split):
                     for device in devices:
                         print(f"{device}")
                         await asyncio.sleep(0.1)
-                except KeyboardInterrupt: return
+                except KeyboardInterrupt: 
+                    print(f"{WARNING}KeyboardInterrupt{RESET}")
+                    return
             case _:         
                 error_handler(command, command_split)
                 return
