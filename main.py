@@ -21,7 +21,15 @@ script_directory = Path(__file__).parent
 #global deque of command history
 history = deque(maxlen=35)
 
-#general error handler (relic that will be removed)
+#network status
+def network_status():
+    try:
+        socket.create_connection(('8.8.8.8', 53))
+        return True
+    except Exception:
+        return False
+    
+#general error handler (relic that will be removed / refactored)
 def error_handler(command, command_split):
     print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
     return
@@ -247,20 +255,17 @@ def external_tools(command, command_split):
         
 #modify and access history deque
 def shell_history(command, command_split):
-    match len(command_split):
-        case 1:
-            if command_split[0] == 'history':    
-                print(f"{GREEN} >> Command History{RESET}")
-                for element in history:
-                    print(f">> {element}")
+    if len(command_split) == 1:
+        if command_split[0] == 'history':    
+            print(f"{GREEN} >> Command History{RESET}")
+            for element in history:
+                print(f">> {element}")
 
-        case 2:
-            if command_split[1] == 'clear':
-                history.clear()
-                return       
-        case _:
-            error_handler(command, command_split)
-            return
+    if len(command_split) == 2:
+        if command_split[1] == 'clear':
+            history.clear()
+            return       
+    else: error_handler(command, command_split)
             
 #all usable commands
 commands = {
@@ -312,6 +317,18 @@ def command_execute(current_directory):
 def main():
     date = datetime.datetime.now()
     print(f"{TITLE1}tt-shell [{sys.argv[0]}]{RESET} / {TITLE2}{date}{RESET}")
+
+    try: 
+        if not network_status():
+            print(f"Network Status >> {WARNING}Offline{RESET}")
+        else:
+            print(f"Network Status >> {GREEN}Online{RESET}")
+            
+    except Exception: 
+        print(f"{WARNING}Error Fetching Network Status{RESET}")
+        
+    finally: pass
+
     while True:
         current_directory = os.getcwd()
         command_execute(current_directory)
