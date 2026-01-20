@@ -34,13 +34,13 @@ Port / 2 / CONNECTION REFUSED
 
 ```
 
-### Bluetooth monitor
-*Monitors nearby Bluetooth adresses*
+### Bluetooth discover
+*discovers nearby Bluetooth adresses*
 ```
 [/path/to/tt-shell-python/main.py] >>> ble
 {Bluetooth devices}
 >>> KeyboardInterrupt
-{ends monitoring}
+{ends discovering}
 ```
 
 

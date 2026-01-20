@@ -26,11 +26,11 @@ def error_handler(command, command_split):
     print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
     return
 
-#bleak bluetooth monitor
-async def ble_monitor(command, command_split):
+#bleak bluetooth discover
+async def ble_discover(command, command_split):
     if len(command_split) == 1:
-        print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end monitor")
-        print(f"{GREEN}Bluetooth Monitor{RESET} >> Starting")
+        print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end scan")
+        print(f"{GREEN}Bluetooth discover{RESET} >> Starting")
         try:
             devices = await BleakScanner.discover()
             for device in devices:
@@ -76,7 +76,7 @@ def connection_portal(command, command_split):
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.settimeout(0.5)
-                    LOCALHOST = '127.0.0.1'
+                    LOCALHOST = '127.0.0.1' #shouldn't be changed ever
                     PORT = int(port_iterator)
                     portscan_state = False
 
@@ -217,6 +217,7 @@ def change_directory(command, command_split):
             return
         if not os.path.isdir(directory):
             print(f"{WARNING}No Such Directory{RESET} >>> {directory}")
+            return
         
         try: 
             os.chdir(str(directory))
@@ -259,7 +260,7 @@ commands = {
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
     "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
-    "ble": lambda command, command_split: asyncio.run(ble_monitor(command, command_split)),
+    "ble": lambda command, command_split: asyncio.run(ble_discover(command, command_split)),
     "git": external_tools,
     "curl": external_tools,
     "type": type_command,
@@ -273,7 +274,7 @@ commands = {
 
 #executing commands
 def command_execute(current_directory):
-    sys.stdout.write(f"[{current_directory}]{GREEN} >>> {RESET}")
+    sys.stdout.write(f"[{current_directory}]{GREEN} >> {RESET}")
 
     try:
         command = input()
@@ -286,7 +287,7 @@ def command_execute(current_directory):
             return
         
         for element in range(len(command_split)):
-            if len(command_split[element]) >= 63 or len(command) > 1024:
+            if len(command_split[element]) >= 63:
                 print(f"{WARNING}Command too long{RESET} => 63 (limit)")
                 return
     
