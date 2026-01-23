@@ -47,9 +47,9 @@ async def ble_discover(command, command_split):
 #helper functions for connection portal
 def socketErrno_reader():
     file_path = script_directory / 'socketErrno.json'
-    file = file_path.open('r')
-    sock_data = json.load(file)
-    return sock_data
+    with file_path.open('r') as file:
+        sock_data = json.load(file)
+        return sock_data
 
 def valid_range(PORT: int) -> bool:
     maximum_port = 65535
@@ -273,7 +273,7 @@ def command_execute(current_directory):
         try: command_split = shlex.split(command) 
 
         except ValueError: 
-            print(f"Exception >> {WARNING}ValueError{RESET} - {command}")
+            print(f"Exception - {WARNING}ValueError{RESET} - {command}")
             return
         
         for element in range(len(command_split)):
