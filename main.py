@@ -15,15 +15,9 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-#current directory
-script_directory = Path(__file__).parent
-
-#global deque of command history
-history = deque(maxlen=35)
-
 #general error handler (relic that will be removed / refactored)
 def error_handler(command, command_split):
-    print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
+    print(f"{WARNING}Invalid syntax{RESET} >> {command}")
     return
 
 #bleak bluetooth discover
@@ -46,6 +40,7 @@ async def ble_discover(command, command_split):
 
 #helper functions for connection portal
 def socketErrno_reader():
+    script_directory = Path(__file__).parent
     file_path = script_directory / 'socketErrno.json'
     with file_path.open('r') as file:
         sock_data = json.load(file)
@@ -166,20 +161,21 @@ def environ_print(command, command_split):
     else: 
         error_handler(command, command_split)
         return
+    
+#type command helper
+def file_check(type_file) -> bool:
+    if type_file is not None:
+        return os.access(type_file, os.X_OK)
 
 #builtin commands checker
 def type_command(command, command_split):
-    def file_check() -> bool:
-        if type_file is not None:
-            return os.access(type_file, os.X_OK)
-
     match len(command_split):
         case 2:
             type_file = shutil.which(command_split[1])
             if command_split[1] in commands:
                 print(f"{command_split[1]} >> {commands.get(command_split[1])}")
                 return
-            if file_check() == True:
+            if file_check(type_file):
                 print(f"{command_split[1]} >> {type_file}")
                 return 
             else: 
@@ -190,16 +186,18 @@ def type_command(command, command_split):
             return
 
 #change current working directory
-def change_directory(command, command_split):
+def change_directory(command, command_split, inital_directory):
     if len(command_split) > 1:
         directory = str(command_split[1])
 
         if command_split[1] == 'reset':
-            os.chdir(script_directory)
+            os.chdir(inital_directory)
             return
+        
         if not os.path.exists(directory):
             print(f"{WARNING}No Such Path{RESET} >> {directory}")
             return
+        
         if not os.path.isdir(directory):
             print(f"{WARNING}No Such Directory{RESET} >> {directory}")
             return
@@ -232,7 +230,7 @@ def external_tools(command, command_split):
             return
         
 #access history deque
-def shell_history(command, command_split):   
+def shell_history(command, command_split, history):   
     if len(command_split) == 1:
         print(f"{GREEN} >> Command History{RESET}")
         for element in history:
@@ -256,16 +254,13 @@ commands = {
     "web": open_website,
     "env": environ_print,
     "file": execute_file,
-    "change": change_directory,
-    "con": connection_portal,
-    "history": shell_history
+    "con": connection_portal
 }
 
 #executing commands
-def command_execute(current_directory):
+def command_execute(current_directory, history, initial_directory):
     MAX_TOKEN_LENGTH = 63
     sys.stdout.write(f"[{current_directory}]{GREEN} >> {RESET}")
-
     try:
         command = input()
         history.append(command)
@@ -273,7 +268,7 @@ def command_execute(current_directory):
         try: command_split = shlex.split(command) 
 
         except ValueError: 
-            print(f"Exception - {WARNING}ValueError{RESET} - {command}")
+            print(f"Exception >> {WARNING}ValueError{RESET} - {command}")
             return
         
         for element in range(len(command_split)):
@@ -284,6 +279,14 @@ def command_execute(current_directory):
         if command_split[0] in commands:
             execute = commands.get(command_split[0], error_handler)
             execute(command, command_split)
+
+
+        #these if's are lazy and I will do subdictionary method, for function calls with extra arguements
+        if command_split[0] == 'history':
+            shell_history(command, command_split, history)
+
+        if command_split[0] == 'change':
+            change_directory(command, command_split, initial_directory)
         
         else: error_handler(command, command_split)
 
@@ -292,6 +295,8 @@ def command_execute(current_directory):
         return
     
 def main():
+    history = deque(maxlen=35)
+    initial_directory = str(os.getcwd())
     try:
         with socket.create_connection(('8.8.8.8', 53)):
             print(f"Initial Network Status >> {GREEN}Online{RESET}")
@@ -303,7 +308,7 @@ def main():
     print(f"{TITLE1}tt-shell [{sys.argv[0]}]{RESET} / {TITLE2}{date}{RESET}")
     while True:
         current_directory = os.getcwd()
-        command_execute(current_directory)
+        command_execute(current_directory, history, initial_directory)
 
 if __name__ == "__main__":
     main()
