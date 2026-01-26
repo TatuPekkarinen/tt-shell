@@ -301,8 +301,7 @@ def command_execute(current_directory):
     
 def main():
     print(f">> {GREEN}Connecting{RESET}")
-    HOST = '1.1.1.1'
-    PORT = 53
+    HOST, PORT = '1.1.1.1', 53
     try:
         with socket.create_connection((HOST, PORT)) as s:
             s.settimeout(1)
