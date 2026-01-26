@@ -15,10 +15,6 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-#current directory
-script_directory = Path(__file__).parent
-
-#global deque of command history
 history = deque(maxlen=35)
 
 #general error handler (relic that will be removed / refactored)
@@ -44,8 +40,13 @@ async def ble_discover(command, command_split):
     
     else: error_handler(command, command_split)
 
+def shell_directory():
+    script_directory = Path(__file__).parent
+    return script_directory
+
 #helper functions for connection portal
 def socketErrno_reader():
+    script_directory = shell_directory()
     file_path = script_directory / 'socketErrno.json'
     with file_path.open('r') as file:
         sock_data = json.load(file)
@@ -191,15 +192,19 @@ def type_command(command, command_split):
 
 #change current working directory
 def change_directory(command, command_split):
+    script_directory = shell_directory()
+
     if len(command_split) > 1:
         directory = str(command_split[1])
 
         if command_split[1] == 'reset':
             os.chdir(script_directory)
             return
+        
         if not os.path.exists(directory):
             print(f"{WARNING}No Such Path{RESET} >> {directory}")
             return
+        
         if not os.path.isdir(directory):
             print(f"{WARNING}No Such Directory{RESET} >> {directory}")
             return
@@ -230,19 +235,21 @@ def external_tools(command, command_split):
         case _: 
             error_handler(command, command_split)
             return
-        
+
 #access history deque
-def shell_history(command, command_split):   
+def modify_history(command, command_split):   
     if len(command_split) == 1:
         print(f"{GREEN} >> Command History{RESET}")
         for element in history:
             print(f">> {element}")
         return     
-    else: 
-        if command_split[1] == 'clear':
-            history.clear()
-            return
-        error_handler(command, command_split)
+    if len(command_split) == 2:
+        match command_split[1]:
+            case 'clear':
+                history.clear()
+                return
+            case _: error_handler(command, command_split)
+    else: error_handler(command, command_split)
             
 #all usable commands
 commands = {
@@ -259,7 +266,7 @@ commands = {
     "file": execute_file,
     "change": change_directory,
     "con": connection_portal,
-    "history": shell_history
+    "history": modify_history
 }
 
 #executing commands
@@ -293,8 +300,12 @@ def command_execute(current_directory):
         return
     
 def main():
+    print(f">> {GREEN}Connecting{RESET}")
+    HOST = '1.1.1.1'
+    PORT = 53
     try:
-        with socket.create_connection(('8.8.8.8', 53)):
+        with socket.create_connection((HOST, PORT)) as s:
+            s.settimeout(1)
             print(f"Initial Network Status >> {GREEN}Online{RESET}")
     
     except OSError:
