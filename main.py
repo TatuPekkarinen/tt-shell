@@ -45,6 +45,8 @@ def shell_directory():
     return script_directory
 
 #helper functions for connection portal
+
+#reading JSON of socketErrno
 def socketErrno_reader():
     script_directory = shell_directory()
     file_path = script_directory / 'socketErrno.json'
@@ -52,16 +54,19 @@ def socketErrno_reader():
         sock_data = json.load(file)
         return sock_data
 
+#port valid range
 def valid_range(PORT: int) -> bool:
     maximum_port = 65535
     return 0 <= PORT <= maximum_port
 
+#initialize sockets
 def socket_initialize(HOST, PORT):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.settimeout(5)
         status = sock.connect_ex((HOST, PORT))
         return status
 
+#scan results
 def scan_initialize(PORT, status):
     sock_data = socketErrno_reader()
     if status == 0:
