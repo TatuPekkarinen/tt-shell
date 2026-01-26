@@ -28,23 +28,30 @@ async def ble_discover(command, command_split):
         print(f"{WARNING}Caution{RESET} >> keyboard interrupt to end scan")
         print(f"{GREEN}Bluetooth discover{RESET} >> Starting")
         try:
-            devices = await BleakScanner.discover()
-            for device in devices:
-                print(f"{device}")
-                await asyncio.sleep(0.2)
+            while True:
+                devices = await BleakScanner.discover(timeout=3.0)
+                for device in devices:
+                    print(f"{device}")
+                    await asyncio.sleep(0.2)
 
         except asyncio.CancelledError: raise   
         except KeyboardInterrupt: 
             print(f"{WARNING}KeyboardInterrupt{RESET}")
             return
-    
     else: error_handler(command, command_split)
+    return
 
+#adapter for the bleak scanner
+def bleak_adapter(command, command_split):
+    try: asyncio.run(ble_discover(command, command_split))
+    except Exception:
+        print(f"{WARNING}Unable To Run Scan{RESET} >> Returning")
+    return
+
+#directory access
 def shell_directory():
     script_directory = Path(__file__).parent
     return script_directory
-
-#helper functions for connection portal
 
 #reading JSON of socketErrno
 def socketErrno_reader():
@@ -75,6 +82,14 @@ def scan_initialize(PORT, status):
         print(f"Port >> {PORT} >> {WARNING}{sock_data[str(status)]}{RESET}")
     return
 
+#whitelist
+def host_blocker(HOST) -> bool:
+    allowed = {"127.0.0.1", "localhost"}
+    if HOST not in allowed:
+        print(f"{WARNING}Host Not Allowed{RESET} >> Attempt Blocked")
+        return False
+    else: return True
+
 #connectivity tester and port scanner   
 def connection_portal(command, command_split):
     match len(command_split):
@@ -87,6 +102,7 @@ def connection_portal(command, command_split):
                 for port_iterator in range(scanrange_min, scanrange_max):
                     #this address shouldn't be changed
                     HOST = '127.0.0.1' 
+                    if not host_blocker(HOST): break
                     PORT = int(port_iterator)
 
                     if not valid_range(PORT):
@@ -94,7 +110,10 @@ def connection_portal(command, command_split):
                         return
 
                     status = socket_initialize(HOST, PORT)
-                    scan_initialize(PORT, status)  
+                    try: scan_initialize(PORT, status)  
+                    except KeyError: 
+                        print(f"{WARNING}KeyError{RESET} >> Unable To Form Connection")
+                        break
                 return
 
         case 3:
@@ -137,31 +156,14 @@ def execute_file(command, command_split):
         return
 
 #website opener
-def open_website(command, command_split):
-    match len(command_split):
-        case 2:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(5)
-
-                PORT = 443
-                try: HOST = socket.gethostbyname(str(command_split[1]))
-                except socket.gaierror:
-                    print(f"{WARNING}socket.gaierror{RESET} / Unable To Open Website")
-                    return
-                
-                print(f"Connection Test >> {GREEN}Connection To {HOST} From {PORT}{RESET}")
-                status = sock.connect_ex((HOST, PORT))
-                if status == 0:
-                    print(f"Connection Succesful >> {GREEN}Accessing Website{RESET} >> {command_split[1]}")
-                    webbrowser.open(command_split[1])
-                    return
-                
-                else: 
-                    print(f"{WARNING}Connection Failed{RESET} / Unable To Open Website")
-                    return
-        case _: 
-            error_handler(command, command_split)
-            return
+def open_website(command, command_split):      
+    if len(command_split) == 2:
+        url = command_split[1]
+        if not url.startswith(('http://', 'https://')):     
+            url = "https://" + url
+        webbrowser.open(url)
+        return
+    else: error_handler(command, command_split)
     
 #environment variables   
 def environ_print(command, command_split):
@@ -172,20 +174,20 @@ def environ_print(command, command_split):
     else: 
         error_handler(command, command_split)
         return
-
+    
+def file_check(type_file) -> bool:
+    if type_file is not None:
+        return os.access(type_file, os.X_OK)
+    
 #builtin commands checker
 def type_command(command, command_split):
-    def file_check() -> bool:
-        if type_file is not None:
-            return os.access(type_file, os.X_OK)
-
     match len(command_split):
         case 2:
             type_file = shutil.which(command_split[1])
             if command_split[1] in commands:
                 print(f"{command_split[1]} >> {commands.get(command_split[1])}")
                 return
-            if file_check() == True:
+            if file_check(type_file):
                 print(f"{command_split[1]} >> {type_file}")
                 return 
             else: 
@@ -262,7 +264,7 @@ commands = {
     "python": lambda command, command_split: print(sys.version),
     "echo": lambda command, command_split: print(*command_split[1:]),
     "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
-    "ble": lambda command, command_split: asyncio.run(ble_discover(command, command_split)),
+    "ble": bleak_adapter,
     "git": external_tools,
     "curl": external_tools,
     "type": type_command,
