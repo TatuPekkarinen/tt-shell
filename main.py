@@ -9,17 +9,19 @@ from collections import deque
 from pathlib import Path
 import socket, json
 
+#ANSI colors
 GREEN = '\033[92m'
 TITLE1 = '\033[94m'
 TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
+#global history double ended queue
 history = deque(maxlen=35)
 
-#general error handler (relic that will be removed / refactored)
-def error_handler(command, command_split):
-    print(f"{WARNING}Invalid syntax{RESET} <<< {command}")
+#error handler (still not good)
+def error(message):
+    print(f"{WARNING}{message}{RESET}")
     return
 
 #bleak bluetooth discover
@@ -38,7 +40,7 @@ async def ble_discover(command, command_split):
         except KeyboardInterrupt: 
             print(f"{WARNING}KeyboardInterrupt{RESET}")
             return
-    else: error_handler(command, command_split)
+    else: error("Unable To Discover devices")
     return
 
 #adapter for the bleak scanner
@@ -82,14 +84,6 @@ def scan_initialize(PORT, status):
         print(f"Port >> {PORT} >> {WARNING}{sock_data[str(status)]}{RESET}")
     return
 
-#whitelist
-def host_blocker(HOST) -> bool:
-    allowed = {"127.0.0.1", "localhost"}
-    if HOST not in allowed:
-        print(f"{WARNING}Host Not Allowed{RESET} >> Attempt Blocked")
-        return False
-    else: return True
-
 #connectivity tester and port scanner   
 def connection_portal(command, command_split):
     match len(command_split):
@@ -102,29 +96,28 @@ def connection_portal(command, command_split):
                 for port_iterator in range(scanrange_min, scanrange_max):
                     #this address shouldn't be changed
                     HOST = '127.0.0.1' 
-                    if not host_blocker(HOST): break
                     PORT = int(port_iterator)
 
                     if not valid_range(PORT):
-                        print(f"{WARNING}Port ({port_iterator}) Invalid{RESET} (Not In Range)")
+                        error("Port Not In Range >> (Invalid port)")
                         return
 
                     status = socket_initialize(HOST, PORT)
                     try: scan_initialize(PORT, status)  
                     except KeyError: 
-                        print(f"{WARNING}KeyError{RESET} >> Unable To Form Connection")
+                        error("KeyError >> Unable To Form Connection")
                         break
                 return
 
         case 3:
             try: HOST = socket.gethostbyname(str(command_split[1]))
             except socket.gaierror: 
-                print(f"{WARNING}socket.gaierror{RESET} / Unable To Find Hostname")
+                error("socket.gaierror >> Unable To Find Hostname")
                 return
             
             PORT = int(command_split[2])
             if not valid_range(PORT):
-                print(f"{WARNING}Port Invalid{RESET} / (Not In Range 0-65535)")
+                error("Port Not In Range >> (Invalid port)")
                 return
             
             print(f"{GREEN}Connnecting To {HOST} From {PORT}{RESET}")
@@ -132,17 +125,19 @@ def connection_portal(command, command_split):
             scan_initialize(PORT, status)  
             return
             
-        case _: error_handler(command, command_split)
+        case _:
+            error("Unable To Form Connection")
+            return
 
 #executing file
 def execute_file(command, command_split):
     if len(command_split) < 2:
-        error_handler(command, command_split)
+        error("Invalid Arguments")
         return
     
     execute_path = shutil.which(command_split[1])
     if execute_path is None:
-        print(f"{WARNING}File Not Found{RESET} >> ({command_split[1]})")
+        error("File Not Found in PATH")
         return
     
     if os.access(str(execute_path), os.X_OK):
@@ -152,7 +147,7 @@ def execute_file(command, command_split):
         return
     
     else: 
-        error_handler(command, command_split)
+        error("Unable To Execute File")
         return
 
 #website opener
@@ -163,7 +158,9 @@ def open_website(command, command_split):
             url = "https://" + url
         webbrowser.open(url)
         return
-    else: error_handler(command, command_split)
+    else: 
+        error("Website Not Found")
+        return
     
 #environment variables   
 def environ_print(command, command_split):
@@ -172,9 +169,10 @@ def environ_print(command, command_split):
         pprint.pprint(dict(envar), width=5, indent=5) 
         return
     else: 
-        error_handler(command, command_split)
+        error("Invalid Arguments")
         return
-    
+
+#check file
 def file_check(type_file) -> bool:
     if type_file is not None:
         return os.access(type_file, os.X_OK)
@@ -191,10 +189,10 @@ def type_command(command, command_split):
                 print(f"{command_split[1]} >> {type_file}")
                 return 
             else: 
-                error_handler(command, command_split)
+                error("Command Not Found")
                 return
         case _: 
-            print(f"{WARNING}Invalid Arguments{RESET} (1 given >> 2 expected)")
+            error("Invalid Arguments")
             return
 
 #change current working directory
@@ -209,11 +207,11 @@ def change_directory(command, command_split):
             return
         
         if not os.path.exists(directory):
-            print(f"{WARNING}No Such Path{RESET} >> {directory}")
+            error("Path Not Found")
             return
         
         if not os.path.isdir(directory):
-            print(f"{WARNING}No Such Directory{RESET} >> {directory}")
+            error("Directory Not Found")
             return
         
         try: 
@@ -221,15 +219,15 @@ def change_directory(command, command_split):
             return
         
         except FileNotFoundError: 
-            print(f"Exception - {WARNING}FileNotFoundError{RESET}")
+            print("FileNotFoundError")
             return
     else: 
-        error_handler(command, command_split)
+        error("Command Not Found")
         return
 
 #external tool wrappers 
 def external_tools(command, command_split):
-    invalid_argument = lambda: print(f"{WARNING}subprocess.CalledProcessError (Invalid Arguments){RESET} >> {command}")
+    tools = {curl, git}
     match command_split[0]:
         case 'curl' | 'git':
             try: 
@@ -237,10 +235,10 @@ def external_tools(command, command_split):
                 return
             
             except subprocess.CalledProcessError: 
-                invalid_argument()
+                error("subprocess.CalledProcessError")
                 return
         case _: 
-            error_handler(command, command_split)
+            error("Invalid Command")
             return
 
 #access history deque
@@ -255,8 +253,12 @@ def modify_history(command, command_split):
             case 'clear':
                 history.clear()
                 return
-            case _: error_handler(command, command_split)
-    else: error_handler(command, command_split)
+            case _: 
+                error("Command Not Found")
+                return
+    else: 
+        error("Invalid Command Lenght")
+        return
             
 #all usable commands
 commands = {
@@ -283,39 +285,41 @@ def command_execute(current_directory):
 
     try:
         command = input()
-        history.append(command)
         if command == '': return
+        history.append(command)
         try: command_split = shlex.split(command) 
 
         except ValueError: 
-            print(f"Exception - {WARNING}ValueError{RESET} - {command}")
+            error("ValueError")
             return
         
         for element in range(len(command_split)):
             if len(command_split[element]) >= MAX_TOKEN_LENGTH:
-                print(f"{WARNING}Command Too Long{RESET} >> 63 (Limit)")
+                error("MAX_TOKEN_LENGTH exceeded")
                 return
     
         if command_split[0] in commands:
-            execute = commands.get(command_split[0], error_handler)
+            execute = commands.get(command_split[0])
             execute(command, command_split)
         
-        else: error_handler(command, command_split)
+        else: 
+            error("Command Not Found")
+            return
 
     except KeyboardInterrupt: 
-        print(f"\n{WARNING}KeyboardInterrupt{RESET}")
+        error("KeyboardInterrupt")
         return
     
 def main():
-    print(f">> {GREEN}Connecting{RESET}")
-    HOST, PORT = '1.1.1.1', 53
     try:
-        with socket.create_connection((HOST, PORT)) as s:
-            s.settimeout(1)
+        print(f">> {GREEN}Connecting{RESET} / <Turn Firewall Off>")
+        HOST, PORT = '1.1.1.1', 443
+        with socket.create_connection((HOST, PORT), timeout = 1.0): 
             print(f"Initial Network Status >> {GREEN}Online{RESET}")
     
     except OSError:
         print(f"Initial Network Status >> {WARNING}Offline{RESET}")
+    except KeyboardInterrupt: sys.exit(0)
 
     date = datetime.datetime.now()
     print(f"{TITLE1}tt-shell [{sys.argv[0]}]{RESET} / {TITLE2}{date}{RESET}")
