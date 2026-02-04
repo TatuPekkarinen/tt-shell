@@ -16,10 +16,10 @@ TITLE2 = '\033[95m'
 WARNING = '\033[91m'
 RESET = '\033[0m'
 
-#global history double ended queue
+#Global history double ended queue
 history = deque(maxlen=35)
 
-#error handler (still not good)
+#Error handler (still not good in my opinion)
 def error(message):
     print(f"{WARNING}{message}{RESET}")
     return
@@ -178,16 +178,19 @@ def file_check(type_file) -> bool:
         return os.access(type_file, os.X_OK)
     
 #builtin commands checker
-def type_command(command, command_split):
+def type_command(command, command_sp12lit):
     match len(command_split):
         case 2:
             type_file = shutil.which(command_split[1])
+
             if command_split[1] in commands:
                 print(f"{command_split[1]} >> {commands.get(command_split[1])}")
                 return
+
             if file_check(type_file):
                 print(f"{command_split[1]} >> {type_file}")
                 return 
+
             else: 
                 error("Command Not Found")
                 return
@@ -205,19 +208,19 @@ def change_directory(command, command_split):
         if command_split[1] == 'reset':
             os.chdir(script_directory)
             return
-        
+
         if not os.path.exists(directory):
             error("Path Not Found")
             return
-        
+
         if not os.path.isdir(directory):
             error("Directory Not Found")
             return
-        
+
         try: 
             os.chdir(str(directory))
             return
-        
+
         except FileNotFoundError: 
             print("FileNotFoundError")
             return
@@ -227,9 +230,8 @@ def change_directory(command, command_split):
 
 #external tool wrappers 
 def external_tools(command, command_split):
-    tools = {curl, git}
     match command_split[0]:
-        case 'curl' | 'git':
+        case 'git' | 'curl':
             try: 
                 subprocess.run(command_split, check=True)
                 return
@@ -295,7 +297,7 @@ def command_execute(current_directory):
         
         for element in range(len(command_split)):
             if len(command_split[element]) >= MAX_TOKEN_LENGTH:
-                error("MAX_TOKEN_LENGTH exceeded")
+                error("MAX_TOKEN_LENGTH >> exceeded")
                 return
     
         if command_split[0] in commands:
@@ -319,6 +321,7 @@ def main():
     
     except OSError:
         print(f"Initial Network Status >> {WARNING}Offline{RESET}")
+
     except KeyboardInterrupt: sys.exit(0)
 
     date = datetime.datetime.now()
