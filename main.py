@@ -178,7 +178,7 @@ def file_check(type_file) -> bool:
         return os.access(type_file, os.X_OK)
     
 #builtin commands checker
-def type_command(command, command_sp12lit):
+def type_command(command, command_split):
     match len(command_split):
         case 2:
             type_file = shutil.which(command_split[1])
