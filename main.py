@@ -4,8 +4,8 @@ import sys
 import os 
 import shutil
 import asyncio
+import pprint
 
-from pprint import *
 from bleak import BleakScanner
 import subprocess, webbrowser
 from collections import deque
