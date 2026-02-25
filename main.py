@@ -19,7 +19,7 @@ RESET = '\033[0m'
 #Global history double ended queue
 history = deque(maxlen=35)
 
-#Error handler (still not good in my opinion)
+#Error handler
 def error(message):
     print(f"{WARNING}{message}{RESET}")
     return
@@ -34,7 +34,7 @@ async def ble_discover(command, command_split):
                 devices = await BleakScanner.discover(timeout=3.0)
                 for device in devices:
                     print(f"{device}")
-                    await asyncio.sleep(0.2)
+                    await asyncio.sleep(0.1)
 
         except asyncio.CancelledError: raise   
         except KeyboardInterrupt: 
@@ -230,18 +230,22 @@ def change_directory(command, command_split):
 
 #external tool wrappers 
 def external_tools(command, command_split):
-    match command_split[0]:
-        case 'git' | 'curl':
-            try: 
-                subprocess.run(command_split, check=True)
-                return
-            
-            except subprocess.CalledProcessError: 
-                error("subprocess.CalledProcessError")
-                return
-        case _: 
-            error("Invalid Command")
+    tools = {
+        "git",
+        "curl"
+    }
+
+    if command_split[0] in tools:
+        try: 
+            subprocess.run(command_split, shell=False, check=True)
             return
+        
+        except subprocess.CalledProcessError: 
+            error("subprocess.CalledProcessError")
+            return
+    else:
+        error("Invalid Command")
+        return
 
 #access history deque
 def modify_history(command, command_split):   
