@@ -1,8 +1,11 @@
-import pprint
 import shlex
 import time, datetime
-import sys, os, shutil
+import sys
+import os 
+import shutil
 import asyncio
+
+from pprint import pprint
 from bleak import BleakScanner
 import subprocess, webbrowser
 from collections import deque
