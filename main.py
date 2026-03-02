@@ -122,9 +122,7 @@ def connection_portal(command, command_split):
                         error(ErrorCode.ConnectionFailed)
                         break
                 return
-
-            else:
-                error(ErrorCode.ConnectionFailed)
+            else: error(ErrorCode.ConnectionFailed)
         case 3:
             try: HOST = socket.gethostbyname(str(command_split[1]))
             except socket.gaierror: 
@@ -142,7 +140,7 @@ def connection_portal(command, command_split):
             return
             
         case _:
-            error("Unable To Form Connection")
+            error(ErrorCode.ConnectionFailed)
             return
 
 #executing file
