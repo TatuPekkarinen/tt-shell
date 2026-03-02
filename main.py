@@ -14,7 +14,7 @@ from collections import deque
 from pathlib import Path
 
 #error codes in the ErrorCodes.py
-from ErrorCodes import ErrorCode
+from errorCodes import ErrorCode
 
 #ANSI colors
 GREEN = '\033[92m'
