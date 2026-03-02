@@ -15,11 +15,8 @@ from collections import deque
 from pathlib import Path
 
 
-#error codes in the ErrorCodes.py
+#error codes in the errorClass.py
 from errorClass import ErrorCode
-
-#command list from commands.py
-from commandExec import commands
 
 #external tool dictionary
 from toolbox import tools
@@ -280,6 +277,23 @@ def modify_history(command, command_split):
     else: 
         error(ErrorCode.InvalidArguments)
         return
+
+commands = {
+    "exit": lambda command, command_split: sys.exit(0),
+    "python": lambda command, command_split: print(sys.version),
+    "echo": lambda command, command_split: print(*command_split[1:]),
+    "com": lambda command, command_split: pprint.pprint(dict(commands), width = 5),
+    "ble": bleak_adapter,
+    "git": external_tools,
+    "curl": external_tools,
+    "type": type_command,
+    "web": open_website,
+    "env": environ_print,
+    "file": execute_file,
+    "change": change_directory,
+    "con": connection_portal,
+    "history": modify_history
+}
 
 #executing commands
 def command_execute(current_directory):
