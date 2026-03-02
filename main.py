@@ -22,7 +22,7 @@ from errorClass import ErrorCode
 from commandExec import commands
 
 #external tool dictionary
-from toolBox import tools
+from toolbox import tools
 
 #ANSI colors
 GREEN = '\033[92m'
