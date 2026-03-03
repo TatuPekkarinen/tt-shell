@@ -8,15 +8,16 @@ import asyncio
 import pprint
 import socket
 import json
+import subprocess
+import webbrowser
 
 from bleak import BleakScanner
-import subprocess, webbrowser
 from collections import deque
 from pathlib import Path
 
 
 #error codes in the errorClass.py
-from errorClass import ErrorCode
+from errorclass import ErrorCode
 
 #external tool dictionary
 from toolbox import tools
