@@ -15,8 +15,7 @@ from bleak import BleakScanner
 from collections import deque
 from pathlib import Path
 
-
-#error codes in the errorClass.py
+#error codes in the errorclass.py
 from errorclass import ErrorCode
 
 #external tool dictionary
@@ -103,7 +102,7 @@ def scan_initialize(PORT, status):
 def connection_portal(command, command_split):
     match len(command_split):
         case 4:
-            if command_split[1] == 'range':
+            if command_split[1] == 'locrange':
                 print(f"{GREEN}Starting Scan From {command_split[2]} To {command_split[3]}{RESET}")
                 scanrange_min = int(command_split[2])
                 scanrange_max = int(command_split[3]) + 1
@@ -124,6 +123,7 @@ def connection_portal(command, command_split):
                         break
                 return
             else: error(ErrorCode.ConnectionFailed)
+
         case 3:
             try: HOST = socket.gethostbyname(str(command_split[1]))
             except socket.gaierror: 
